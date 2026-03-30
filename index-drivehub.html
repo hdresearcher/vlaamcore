@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Drivehub — B2B SaaS Last-Mile Delivery Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sidebar-w:270px;
+  --brand:#1a6dca;--brand-dark:#2b85f0;--brand-light:rgba(26,109,202,0.18);
+  --accent:#f59e0b;--accent-dark:#d97706;
+  --bg:#07091a;--sidebar-bg:#0c1020;
+  --text:#e2e8f0;--text-muted:#64748b;--border:rgba(255,255,255,0.08);
+  --border-bright:rgba(255,255,255,0.14);
+  --code-bg:rgba(255,255,255,0.06);
+  --success:#10b981;--warning:#d97706;--danger:#ef4444;
+  --note-bg:rgba(26,109,202,0.12);--note-border:#2b85f0;
+  --glass:rgba(12,16,32,0.82);
+  --radius:6px;--shadow:0 2px 8px rgba(0,0,0,.35);--shadow-lg:0 8px 28px rgba(0,0,0,.5);
+  --footer-h:48px;
+  --hl-red:rgba(239,68,68,.22);--hl-green:rgba(16,185,129,.20);--hl-blue:rgba(43,133,240,.18);
+  --hl-red-solid:rgba(239,68,68,.5);--hl-green-solid:rgba(16,185,129,.4);--hl-blue-solid:rgba(43,133,240,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15.5px;overflow:hidden;height:100vh;}
+
+/* ══════ APP SHELL ══════ */
+.app-root{display:flex;flex-direction:column;height:100vh;}
+.app-tabbar{display:flex;align-items:center;background:rgba(6,8,15,0.98);backdrop-filter:blur(20px);color:#fff;height:42px;min-height:42px;padding:0 12px;gap:2px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:inset 0 -2px 0 var(--accent);z-index:500;}
+.app-tab{padding:6px 16px;border-radius:6px 6px 0 0;cursor:pointer;color:#94a3b8;transition:all .15s;font-weight:500;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.app-tab:hover{color:#e2e8f0;background:rgba(255,255,255,.07);}
+.app-tab.active{color:#fff;background:rgba(255,255,255,.12);border-bottom:2px solid var(--accent);margin-bottom:-2px;}
+.app-tab .tab-icon{font-size:15px;}
+.mobile-menu-btn{font-size:18px !important;}
+.app-tab-spacer{flex:1;}
+.app-tab-brand{font-family:'Fraunces',serif;font-weight:800;color:var(--accent);font-size:15px;letter-spacing:.3px;display:flex;align-items:center;gap:6px;}.logout-btn{margin-left:4px;padding:5px 12px;border-radius:6px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#fca5a5;font-size:11.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}.logout-btn:hover{background:rgba(239,68,68,0.22);border-color:rgba(239,68,68,0.45);color:#fff;transform:translateY(-1px);}
+.app-tab-brand .brand-dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 6px rgba(5,150,105,.5);}
+.app-panels{flex:1;position:relative;overflow:hidden;}
+.app-panel{position:absolute;inset:0;display:none;overflow:hidden;flex-direction:row;}
+.app-panel.active{display:flex;}
+
+/* ══════ SIDEBAR ══════ */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-header{padding:14px 14px 10px;border-bottom:1px solid var(--border);text-align:center;background:rgba(26,109,202,0.04);}
+
+/* Editable logo */
+.logo-icon{
+  width:50px;height:50px;border-radius:12px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#fff;font-size:20px;font-weight:800;font-family:'Fraunces',serif;
+  margin-bottom:6px;cursor:pointer;position:relative;
+  background:linear-gradient(135deg,#0f2d5e,var(--brand));
+  box-shadow:0 2px 14px rgba(26,109,202,.4),0 0 0 1px rgba(26,109,202,.2);
+  overflow:hidden;transition:all .2s;
+}
+.logo-icon:hover{box-shadow:0 4px 14px rgba(26,109,202,.4);transform:scale(1.04);}
+.logo-icon:hover .logo-overlay{opacity:1;}
+.logo-icon img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.logo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0;transition:opacity .2s;pointer-events:none;}
+
+/* Editable project name */
+.logo-title{font-family:'Fraunces',serif;font-size:20px;font-weight:800;color:var(--accent);outline:none;cursor:text;border-radius:4px;padding:0 4px;transition:background .2s;}
+.logo-title:hover{background:rgba(26,109,202,.06);}
+.logo-title:focus{background:rgba(26,109,202,.1);box-shadow:0 0 0 2px rgba(26,109,202,.2);}
+.logo-sub{font-size:11px;color:rgba(100,116,139,0.7);margin-top:1px;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;}
+
+.sidebar-search{padding:8px 12px;border-bottom:1px solid var(--border);}
+.sidebar-search input{width:100%;padding:6px 10px 6px 30px;border:1px solid var(--border);border-radius:var(--radius);font-size:12.5px;background:rgba(255,255,255,0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") 9px center no-repeat;outline:none;transition:border-color .2s;}
+.sidebar-search input:focus{border-color:var(--brand);}
+.sidebar-nav{flex:1;overflow-y:auto;padding:6px 0;}
+.nav-group{margin-bottom:2px;}
+.nav-group-title{padding:5px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(100,116,139,0.6);cursor:pointer;display:flex;align-items:center;gap:5px;user-select:none;}
+.nav-group-title .caret{font-size:8px;transition:transform .2s;}
+.nav-group.collapsed .caret{transform:rotate(-90deg);}
+.nav-group.collapsed .nav-items{display:none;}
+.nav-item{display:flex;align-items:center;padding:4px 10px 4px 22px;font-size:13px;color:#94a3b8;text-decoration:none;cursor:pointer;border-left:3px solid transparent;transition:all .12s;gap:6px;position:relative;}
+.nav-item:hover{background:rgba(26,109,202,.1);color:#e2e8f0;}
+.nav-item.active{background:rgba(26,109,202,.16);border-left-color:var(--brand);color:#2b85f0;font-weight:600;}
+.nav-item .nav-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-item .status{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.status.done{background:var(--success);}
+.status.wip{background:var(--warning);}
+.status.todo{background:var(--border);}
+
+/* Nav item priority color dot */
+.nav-priority-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  cursor:pointer;border:1.5px solid rgba(0,0,0,.15);
+  transition:all .15s;position:relative;
+}
+.nav-priority-dot:hover{transform:scale(1.3);}
+.nav-priority-dot.p-none{background:#e2e8f0;border-color:#cbd5e1;}
+.nav-priority-dot.p-red{background:#ef4444;border-color:#dc2626;}
+.nav-priority-dot.p-green{background:#22c55e;border-color:#16a34a;}
+.nav-priority-dot.p-blue{background:#3b82f6;border-color:#2563eb;}
+
+/* Priority picker popup for nav */
+.nav-priority-picker{
+  position:absolute;left:100%;top:50%;transform:translateY(-50%);
+  background:#fff;border:1px solid var(--border);border-radius:8px;
+  padding:6px;display:none;flex-direction:row;gap:5px;
+  box-shadow:var(--shadow-lg);z-index:100;white-space:nowrap;
+}
+.nav-priority-picker.open{display:flex;}
+.nav-pp-item{
+  width:22px;height:22px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;font-size:10px;
+}
+.nav-pp-item:hover{transform:scale(1.15);border-color:rgba(0,0,0,.2);}
+.nav-pp-item.pp-red{background:#ef4444;}
+.nav-pp-item.pp-green{background:#22c55e;}
+.nav-pp-item.pp-blue{background:#3b82f6;}
+.nav-pp-item.pp-none{background:#e2e8f0;}
+
+.sidebar-footer{padding:10px 14px;border-top:1px solid var(--border);background:rgba(6,8,15,0.5);}
+.progress-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:3px;transition:width .5s;}
+.progress-label{font-size:10.5px;color:var(--text-muted);margin-top:3px;}
+
+/* ══════ DOCS MAIN ══════ */
+.docs-panel{display:flex;flex-direction:row;height:100%;width:100%;}
+.docs-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{background:rgba(10,14,26,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:7px 24px;display:flex;align-items:center;justify-content:space-between;min-height:42px;z-index:50;}
+.topbar-title{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:6px;align-items:center;}
+.btn{padding:5px 12px;border-radius:var(--radius);font-size:12px;font-weight:600;border:1px solid var(--border-bright);background:rgba(255,255,255,0.05);color:var(--text);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px;}
+.btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;border-color:var(--brand);box-shadow:0 2px 10px rgba(26,109,202,0.3);}
+.btn.primary:hover{background:linear-gradient(135deg,var(--brand-dark),#3a9af5);box-shadow:0 4px 16px rgba(26,109,202,0.4);}
+.btn.success{background:var(--success);color:#fff;border-color:var(--success);}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn.accent:hover{background:var(--accent-dark);}
+.btn.sm{padding:3px 8px;font-size:11px;}
+.edit-indicator{font-size:11px;padding:3px 8px;border-radius:12px;font-weight:600;}
+.edit-indicator.editing{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.edit-indicator.saved{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);}
+
+/* ── Mark Text Highlight System ── */
+.mark-btn-wrap{position:relative;}
+.mark-popup{
+  position:absolute;top:100%;right:0;margin-top:6px;
+  background:rgba(10,14,28,0.98);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+  padding:10px 12px;display:none;
+  box-shadow:0 16px 40px rgba(0,0,0,0.6);z-index:200;min-width:210px;
+}
+.mark-popup.open{display:block;}
+.mark-popup-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.mark-color-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--radius);cursor:pointer;transition:background .12s;font-size:13px;}
+.mark-color-row:hover{background:rgba(255,255,255,0.07);}
+.mark-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,.1);}
+.mark-swatch.sw-red{background:#ef4444;}
+.mark-swatch.sw-green{background:#22c55e;}
+.mark-swatch.sw-blue{background:#3b82f6;}
+.mark-label{flex:1;font-weight:500;}
+.mark-badge{font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
+.mark-badge.mb-red{background:#fee2e2;color:#991b1b;}
+.mark-badge.mb-green{background:#dcfce7;color:#166534;}
+.mark-badge.mb-blue{background:#dbeafe;color:#1e40af;}
+.mark-divider{height:1px;background:var(--border);margin:8px 0;}
+.mark-remove-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--radius);cursor:pointer;transition:background .12s;font-size:12.5px;color:var(--text-muted);}
+.mark-remove-row:hover{background:rgba(239,68,68,0.15);color:#fca5a5;}
+
+/* Highlight spans inside content */
+mark[data-hl="red"]{background:var(--hl-red);border-bottom:2px solid #ef4444;padding:1px 2px;border-radius:2px;cursor:pointer;}
+mark[data-hl="green"]{background:var(--hl-green);border-bottom:2px solid #22c55e;padding:1px 2px;border-radius:2px;cursor:pointer;}
+mark[data-hl="blue"]{background:var(--hl-blue);border-bottom:2px solid #3b82f6;padding:1px 2px;border-radius:2px;cursor:pointer;}
+
+/* Content area */
+.content-scroll{flex:1;overflow-y:auto;padding-bottom:var(--footer-h);}
+.content{max-width:820px;margin:0 auto;padding:24px 32px 60px;}
+.content[contenteditable="true"]{outline:none;}
+.content[contenteditable="true"]:focus{box-shadow:inset 0 0 0 2px rgba(26,109,202,.12);border-radius:8px;}
+.content h1{font-family:'Fraunces',serif;font-size:28px;font-weight:800;margin-bottom:8px;padding-bottom:10px;border-bottom:2px solid var(--brand);}
+.content h2{font-size:21px;font-weight:700;margin:28px 0 10px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.1);color:#e2e8f0;}
+.content h3{font-size:16px;font-weight:600;color:var(--brand-dark);margin:18px 0 7px;}
+.content p{margin-bottom:12px;}
+.content ul,.content ol{margin:7px 0 12px 20px;}
+.content li{margin-bottom:4px;}
+.note{background:rgba(43,133,240,0.09);border-left:4px solid var(--note-border);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:13.5px;}
+.note .note-title{font-weight:700;color:var(--note-border);margin-bottom:3px;font-size:12.5px;}
+.note.warning{background:rgba(217,119,6,0.1);border-color:var(--warning);}.note.warning .note-title{color:#fcd34d;}
+.note.success{background:rgba(16,185,129,0.1);border-color:var(--success);}.note.success .note-title{color:#6ee7b7;}
+.content table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;}
+.content th{background:rgba(26,109,202,0.12);padding:8px 10px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border:1px solid rgba(255,255,255,0.08);color:#64748b;}
+.content td{padding:7px 10px;border:1px solid rgba(255,255,255,0.07);vertical-align:top;color:#cbd5e1;}
+.content tr:nth-child(even) td{background:rgba(255,255,255,0.025);}
+.content code{font-family:'JetBrains Mono',monospace;background:rgba(43,133,240,0.12);padding:2px 5px;border-radius:3px;font-size:12.5px;color:#93c5fd;border:1px solid rgba(43,133,240,0.2);}
+.tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11px;font-weight:600;}
+.tag.mvp{background:rgba(26,109,202,0.2);color:#93c5fd;border:1px solid rgba(26,109,202,0.3);}
+.tag.phase2{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25);}
+.summary-box{background:linear-gradient(135deg,rgba(26,109,202,0.12),rgba(43,133,240,0.07));border:1px solid rgba(26,109,202,0.25);border-radius:8px;padding:14px 16px;margin:14px 0;}
+.summary-box h3{color:var(--brand);margin:0 0 8px;font-size:14px;}
+.summary-box ol{margin-left:16px;}
+.summary-box li{font-size:13.5px;margin-bottom:3px;}
+.solutions-box,.questions-box{border-radius:8px;padding:14px 16px;margin:16px 0;}
+.solutions-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);}
+.questions-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);}
+.solutions-box h3,.questions-box h3{font-size:13.5px;margin:0 0 7px;}
+.solutions-box h3{color:#6ee7b7;}
+.questions-box h3{color:#fcd34d;}
+
+/* ── Attachments ── */
+.attachments-bar{border-top:1px solid var(--border);padding:8px 24px;background:rgba(10,14,26,0.8);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.attachment-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 6px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:20px;font-size:11.5px;cursor:pointer;transition:all .15s;}
+.attachment-chip:hover{border-color:var(--brand);background:rgba(26,109,202,0.15);}
+.attachment-chip img{width:22px;height:22px;border-radius:4px;object-fit:cover;}
+.attachment-chip .att-remove{margin-left:2px;color:#94a3b8;font-size:13px;cursor:pointer;}
+.attachment-chip .att-remove:hover{color:var(--danger);}
+.link-preview{display:flex;gap:12px;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:10px 0;background:rgba(255,255,255,0.04);transition:box-shadow .2s;max-width:560px;}
+.link-preview:hover{box-shadow:var(--shadow);}
+.link-preview-thumb{width:80px;height:60px;border-radius:4px;background:var(--sidebar-bg);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--text-muted);flex-shrink:0;overflow:hidden;}
+.link-preview-thumb img{width:100%;height:100%;object-fit:cover;}
+.link-preview-body{flex:1;min-width:0;}
+.link-preview-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-preview-url{font-size:11px;color:var(--brand);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-preview-desc{font-size:11.5px;color:var(--text-muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.attached-image{margin:12px 0;border-radius:8px;border:1px solid var(--border);overflow:hidden;max-width:100%;position:relative;}
+.attached-image img{width:100%;display:block;}
+.attached-image .img-caption{padding:6px 10px;font-size:11.5px;color:var(--text-muted);background:#f8fafc;border-top:1px solid var(--border);}
+
+/* ══════ PANEL 2: WEBSITE EDITOR — FULL WIDTH ══════ */
+.website-panel{display:flex;flex-direction:row;height:100%;width:100%;}
+.cms-sidebar{width:240px;min-width:240px;background:#1a1f2e;color:#c8d1db;display:flex;flex-direction:column;border-right:1px solid #2d3548;overflow:hidden;}
+.cms-sidebar-header{padding:14px 16px;border-bottom:1px solid #2d3548;display:flex;align-items:center;gap:10px;}
+.cms-sidebar-header .cms-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;font-family:'Fraunces',serif;}
+.cms-sidebar-header .cms-title{font-size:14px;font-weight:600;color:#e2e8f0;}
+.cms-sidebar-header .cms-subtitle{font-size:10.5px;color:#64748b;}
+.cms-nav{flex:1;overflow-y:auto;padding:6px 0;}
+.cms-nav-group{margin-bottom:4px;}
+.cms-nav-group-title{padding:8px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#64748b;}
+.cms-nav-item{padding:7px 16px 7px 20px;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .12s;color:#94a3b8;border-left:3px solid transparent;}
+.cms-nav-item:hover{background:rgba(255,255,255,.05);color:#e2e8f0;}
+.cms-nav-item.active{background:rgba(26,109,202,.15);border-left-color:var(--brand);color:#fff;font-weight:600;}
+.cms-nav-item .cms-icon{font-size:15px;width:20px;text-align:center;}
+.cms-nav-item .cms-badge{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;background:rgba(245,158,11,.2);color:var(--accent);font-weight:700;}
+.cms-nav-sub{padding-left:12px;}
+
+/* CMS main: website preview fills full remaining space */
+.cms-main{flex:1;display:flex;flex-direction:column;background:#f1f5f9;overflow:hidden;min-width:0;}
+.cms-topbar{padding:8px 16px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:40px;flex-shrink:0;}
+.cms-topbar-title{font-size:14px;font-weight:600;}
+.cms-topbar-actions{display:flex;gap:6px;align-items:center;}
+
+/* View Mode toggle group */
+.viewmode-group{
+  display:inline-flex;border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;background:#fff;
+}
+.viewmode-btn{
+  padding:4px 10px;border:none;background:transparent;
+  cursor:pointer;font-size:14px;transition:all .15s;
+  color:var(--text-muted);display:flex;align-items:center;
+  border-right:1px solid var(--border);
+}
+.viewmode-btn:last-child{border-right:none;}
+.viewmode-btn:hover{background:var(--sidebar-bg);}
+.viewmode-btn.active{background:var(--brand);color:#fff;}
+
+/* Device frame simulation */
+.website-preview{flex:1;position:relative;overflow:hidden;background:#e2e8f0;width:100%;display:flex;align-items:flex-start;justify-content:center;}
+.website-iframe-wrapper{
+  position:relative;width:100%;height:100%;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  background:#fff;
+}
+.website-iframe-wrapper iframe{width:100%;height:100%;border:none;background:#fff;display:block;}
+
+/* Desktop mode — full width, no frame */
+.website-iframe-wrapper.mode-desktop{
+  width:100%;height:100%;max-width:none;
+  border-radius:0;box-shadow:none;margin:0;
+}
+
+/* Tablet mode — iPad-like frame */
+.website-iframe-wrapper.mode-tablet{
+  width:820px;max-width:820px;height:calc(100% - 32px);
+  margin:16px auto;border-radius:14px;
+  box-shadow:0 4px 24px rgba(0,0,0,.15),0 0 0 2px #1e293b;
+  overflow:hidden;
+}
+
+/* Mobile mode — phone-like frame */
+.website-iframe-wrapper.mode-mobile{
+  width:390px;max-width:390px;height:calc(100% - 32px);
+  margin:16px auto;border-radius:28px;
+  box-shadow:0 4px 24px rgba(0,0,0,.18),0 0 0 3px #1e293b;
+  overflow:hidden;
+}
+
+/* Device notch for mobile frame */
+.device-notch{
+  display:none;position:absolute;top:0;left:50%;transform:translateX(-50%);
+  z-index:5;width:120px;height:26px;
+  background:#1e293b;border-radius:0 0 16px 16px;
+}
+.mode-mobile .device-notch{display:block;}
+
+/* Device home bar for mobile frame */
+.device-home{
+  display:none;position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  z-index:5;width:100px;height:4px;
+  background:#1e293b;border-radius:2px;
+}
+.mode-mobile .device-home{display:block;}
+.mode-tablet .device-home{display:block;width:80px;}
+.website-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%;text-align:center;padding:40px;color:var(--text-muted);position:absolute;inset:0;background:rgba(7,9,26,0.6);}
+.website-placeholder .wp-icon{font-size:48px;margin-bottom:12px;}
+.website-placeholder h3{font-size:18px;color:var(--text);margin-bottom:6px;}
+.website-placeholder p{font-size:13.5px;max-width:420px;}
+
+/* Feedback panel */
+.feedback-panel{width:320px;min-width:320px;background:rgba(10,14,26,0.97);backdrop-filter:blur(20px);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.feedback-panel-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.feedback-panel-header h3{font-size:14px;font-weight:700;}
+.feedback-body{flex:1;overflow-y:auto;padding:12px 16px;}
+.fb-section{margin-bottom:16px;}
+.fb-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.fb-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:13px;}
+.fb-item input[type="checkbox"]{margin-top:2px;accent-color:var(--brand);width:16px;height:16px;cursor:pointer;}
+.fb-item label{cursor:pointer;flex:1;}
+.fb-item .fb-priority{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700;white-space:nowrap;}
+.fb-priority.high{background:rgba(239,68,68,0.15);color:#fca5a5;}
+.fb-priority.med{background:rgba(245,158,11,0.12);color:#fcd34d;}
+.fb-priority.low{background:rgba(16,185,129,0.12);color:#6ee7b7;}
+.fb-notes{width:100%;margin-top:4px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;resize:vertical;min-height:60px;background:rgba(255,255,255,0.05);color:var(--text);font-family:'DM Sans',sans-serif;}
+.feedback-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;}
+
+/* Settings overlay */
+.settings-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;z-index:200;align-items:center;justify-content:center;}
+.settings-overlay.open{display:flex;}
+.settings-modal{background:rgba(10,14,28,0.98);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:12px;width:560px;max-height:80vh;box-shadow:0 24px 80px rgba(0,0,0,0.7);overflow:hidden;display:flex;flex-direction:column;}
+.settings-modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.settings-modal-header h3{font-size:17px;font-weight:700;}
+.settings-modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:rgba(255,255,255,0.06);cursor:pointer;font-size:16px;color:var(--text);display:flex;align-items:center;justify-content:center;}
+.settings-modal-body{flex:1;overflow-y:auto;padding:20px;}
+.settings-group{margin-bottom:20px;}
+.settings-group h4{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.settings-row label{font-size:13.5px;font-weight:500;}
+.settings-row .settings-val{font-size:13px;color:var(--text-muted);}
+.settings-input{border:1px solid var(--border);padding:4px 8px;border-radius:4px;font-size:13px;width:200px;background:rgba(255,255,255,0.05);color:var(--text);}
+.toggle-switch{width:40px;height:22px;border-radius:11px;background:#cbd5e1;position:relative;cursor:pointer;transition:background .2s;}
+.toggle-switch.on{background:var(--brand);}
+.toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15);}
+.toggle-switch.on::after{transform:translateX(18px);}
+
+/* ══════ PANEL 3: ROADMAP — FULL WIDTH CENTER ══════ */
+.roadmap-panel{display:flex;flex-direction:column;height:100%;width:100%;overflow:hidden;}
+.roadmap-header{padding:24px 32px;background:linear-gradient(135deg,rgba(6,8,15,0.98),rgba(10,14,30,0.98));border-bottom:1px solid rgba(255,255,255,0.07);color:#fff;text-align:center;width:100%;position:relative;overflow:hidden;}
+.roadmap-header h1{font-family:'Fraunces',serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.roadmap-header p{font-size:13.5px;color:#94a3b8;}
+.roadmap-progress-bar{margin:14px auto 0;max-width:700px;display:flex;align-items:center;gap:14px;padding:0 32px;}
+.roadmap-progress-track{flex:1;height:12px;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden;}
+.roadmap-progress-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--brand),var(--accent),var(--success));transition:width .8s ease;}
+.roadmap-progress-pct{font-size:24px;font-weight:800;font-family:'Fraunces',serif;color:var(--accent);min-width:60px;text-align:right;}
+.roadmap-body{flex:1;overflow-y:auto;padding:24px 32px 40px;width:100%;background:var(--bg);}
+.roadmap-body-inner{max-width:960px;margin:0 auto;width:100%;}
+.rm-phase{margin-bottom:28px;border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;background:rgba(12,16,32,0.85);backdrop-filter:blur(12px);}
+.rm-phase-header{padding:12px 18px;background:rgba(26,109,202,0.08);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;}
+.rm-phase-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.rm-phase-header .phase-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;}
+.phase-badge.complete{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2);}
+.phase-badge.active{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25);}
+.phase-badge.upcoming{background:rgba(100,116,139,0.12);color:#94a3b8;border:1px solid rgba(100,116,139,0.2);}
+.rm-phase-header .phase-pct{font-size:13px;font-weight:700;color:var(--brand);}
+.rm-tasks{padding:8px 0;}
+.rm-task{display:flex;align-items:flex-start;gap:10px;padding:8px 18px;transition:background .1s;}
+.rm-task:hover{background:rgba(26,109,202,0.07);}
+.rm-task input[type="checkbox"]{margin-top:3px;accent-color:var(--brand);width:16px;height:16px;cursor:pointer;flex-shrink:0;}
+.rm-task-body{flex:1;min-width:0;}
+.rm-task-title{font-size:13.5px;font-weight:500;}
+.rm-task-title.completed{text-decoration:line-through;color:var(--text-muted);}
+.rm-task-meta{font-size:11.5px;color:var(--text-muted);margin-top:1px;display:flex;gap:12px;}
+.rm-task-meta span{display:flex;align-items:center;gap:3px;}
+.rm-task-edit{opacity:0;cursor:pointer;font-size:12px;color:var(--text-muted);padding:2px 6px;border-radius:4px;transition:all .15s;}
+.rm-task:hover .rm-task-edit{opacity:1;}
+.rm-task-edit:hover{background:var(--brand-light);color:var(--brand);}
+
+/* ══════ GLOBAL FOOTER ══════ */
+.global-footer{height:var(--footer-h);min-height:var(--footer-h);background:#1e293b;display:flex;align-items:center;padding:0 16px;gap:12px;border-top:1px solid #334155;z-index:400;}
+.footer-progress{display:flex;align-items:center;gap:8px;flex:1;}
+.footer-progress-label{font-size:11.5px;color:#94a3b8;white-space:nowrap;}
+.footer-progress-track{width:160px;height:6px;background:#334155;border-radius:3px;overflow:hidden;}
+.footer-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--brand),var(--accent));transition:width .5s;}
+.footer-pct{font-size:13px;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;min-width:36px;}
+.footer-btn{padding:5px 14px;border-radius:var(--radius);font-size:12px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.footer-btn.roadmap-btn{background:linear-gradient(135deg,var(--accent),#f97316);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,.3);}
+.footer-btn.roadmap-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(245,158,11,.4);}
+.footer-btn.json-btn{background:#334155;color:#e2e8f0;border:1px solid #475569;}
+.footer-btn.json-btn:hover{background:#475569;}
+.footer-status{display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b;}
+.footer-status .live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ══════ MODALS ══════ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:rgba(10,14,28,0.98);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:12px;width:480px;box-shadow:0 24px 80px rgba(0,0,0,0.7);overflow:hidden;}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h3{font-size:16px;font-weight:700;}
+.modal-body{padding:20px;}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+.attach-tabs{display:flex;gap:4px;margin-bottom:16px;}
+.attach-tab{padding:6px 14px;border-radius:var(--radius);font-size:12.5px;font-weight:600;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text);cursor:pointer;transition:all .15s;}
+.attach-tab.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+.attach-drop-zone{border:2px dashed rgba(255,255,255,0.15);border-radius:8px;padding:32px;text-align:center;transition:all .2s;cursor:pointer;background:rgba(255,255,255,0.03);}
+.attach-drop-zone:hover,.attach-drop-zone.dragover{border-color:var(--brand);background:rgba(26,109,202,0.1);}
+.attach-drop-zone .dz-icon{font-size:36px;margin-bottom:8px;color:var(--text-muted);}
+.attach-drop-zone p{font-size:13px;color:var(--text-muted);}
+.attach-link-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;margin-bottom:12px;outline:none;background:rgba(255,255,255,0.05);color:var(--text);}
+.attach-link-input:focus{border-color:var(--brand);}
+
+/* ══════ HIGHLIGHT LEGEND (bottom-right float) ══════ */
+.hl-legend{
+  position:fixed;bottom:60px;right:16px;
+  background:rgba(10,14,28,0.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+  padding:10px 14px;box-shadow:0 8px 32px rgba(0,0,0,0.6);
+  font-size:11.5px;z-index:300;display:none;
+}
+.hl-legend.visible{display:block;}
+.hl-legend-title{font-weight:700;font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.hl-legend-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
+.hl-legend-swatch{width:12px;height:12px;border-radius:3px;}
+
+/* ══════ RESPONSIVE — iPhone / iPad / MacBook ══════ */
+
+/* MacBook 13" and similar laptops */
+@media(max-width:1440px){
+  .roadmap-body-inner{max-width:100%;}
+  .roadmap-progress-bar{max-width:100%;}
+}
+
+/* iPad landscape & small laptops */
+@media(max-width:1024px){
+  :root{--sidebar-w:220px;}
+  .content{padding:20px 24px 60px;}
+  .cms-sidebar{width:200px;min-width:200px;}
+  .feedback-panel{width:280px;min-width:280px;}
+  .rm-phase-header h3{font-size:14px;}
+  .rm-task-title{font-size:13px;}
+  .app-tab{padding:6px 10px;font-size:12px;}
+}
+
+/* iPad portrait */
+@media(max-width:834px){
+  :root{--sidebar-w:200px;}
+  .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);}
+  .cms-sidebar{width:180px;min-width:180px;}
+  .feedback-panel{width:260px;min-width:260px;}
+  .content{max-width:100%;padding:16px 16px 60px;}
+  .roadmap-body{padding:16px 16px 40px;}
+  .app-tab .tab-label-text{display:none;}
+  .topbar{padding:7px 12px;}
+  .topbar-actions{gap:4px;}
+  .btn{padding:4px 8px;font-size:11px;}
+  /* Tablet frame can't exceed viewport */
+  .website-iframe-wrapper.mode-tablet{width:100%;max-width:100%;margin:0;border-radius:0;box-shadow:none;}
+}
+
+/* Large phones & iPad mini portrait */
+@media(max-width:768px){
+  .app-tabbar{height:44px;min-height:44px;padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .app-tab{padding:8px 12px;font-size:12px;flex-shrink:0;}
+  .app-tab-brand{font-size:13px;}
+
+  /* Docs panel: sidebar becomes slide-out drawer */
+  .sidebar{
+    position:fixed;left:0;top:44px;bottom:var(--footer-h);
+    width:270px;z-index:450;
+    transform:translateX(-100%);
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    box-shadow:4px 0 20px rgba(0,0,0,.15);
+  }
+  .sidebar.mobile-open{transform:translateX(0);}
+  .sidebar-overlay{
+    position:fixed;inset:0;top:44px;bottom:var(--footer-h);
+    background:rgba(0,0,0,.3);z-index:440;
+    display:none;
+  }
+  .sidebar-overlay.visible{display:block;}
+
+  /* CMS sidebar: slide-out */
+  .cms-sidebar{
+    position:fixed;left:0;top:44px;bottom:var(--footer-h);
+    width:240px;z-index:450;
+    transform:translateX(-100%);
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    box-shadow:4px 0 20px rgba(0,0,0,.15);
+  }
+  .cms-sidebar.mobile-open{transform:translateX(0);}
+
+  /* Feedback: full overlay */
+  .feedback-panel{
+    position:fixed !important;right:0;top:44px;bottom:var(--footer-h);
+    width:100% !important;max-width:360px;z-index:460;
+    display:none !important;
+    box-shadow:-4px 0 20px rgba(0,0,0,.15);
+  }
+  .feedback-panel.mobile-open{display:flex !important;}
+
+  /* Docs content full width */
+  .content{padding:14px 14px 60px;max-width:100%;}
+  .content h1{font-size:22px;}
+  .content h2{font-size:18px;}
+  .content table{font-size:12px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* Roadmap full width */
+  .roadmap-header{padding:16px 14px;}
+  .roadmap-header h1{font-size:20px;}
+  .roadmap-body{padding:14px 12px 40px;}
+  .rm-phase-header{padding:10px 12px;flex-wrap:wrap;gap:4px;}
+  .rm-task{padding:8px 12px;}
+
+  /* Footer compact */
+  .global-footer{padding:0 10px;gap:8px;}
+  .footer-progress-label{display:none;}
+  .footer-progress-track{width:80px;}
+  .footer-btn{padding:5px 10px;font-size:11px;}
+  .footer-btn .btn-label-text{display:none;}
+
+  /* Settings modal full screen */
+  .settings-modal{width:100%;max-width:100%;border-radius:0;max-height:100vh;}
+
+  /* Attach modal */
+  .modal{width:95%;max-width:440px;}
+  
+  /* Mark popup */
+  .mark-popup{right:-40px;min-width:240px;}
+
+  /* View mode group - compact on small screens */
+  .viewmode-group{margin-right:auto;}
+  .viewmode-btn{padding:4px 8px;font-size:12px;}
+
+  /* Highlight legend */
+  .hl-legend{bottom:56px;right:8px;font-size:10.5px;padding:8px 10px;}
+}
+
+/* iPhone SE & small phones */
+@media(max-width:414px){
+  .app-tabbar{gap:0;}
+  .app-tab{padding:6px 8px;font-size:11px;}
+  .app-tab .tab-icon{font-size:14px;}
+  .app-tab-brand{font-size:12px;}
+  .content{padding:10px 10px 60px;}
+  .content h1{font-size:20px;}
+  .content h2{font-size:16px;}
+  .topbar{flex-wrap:wrap;gap:4px;padding:6px 10px;min-height:unset;}
+  .topbar-title{font-size:12px;width:100%;margin-bottom:2px;}
+  .topbar-actions{width:100%;justify-content:flex-end;}
+  .btn{font-size:10.5px;padding:3px 6px;}
+  .roadmap-header h1{font-size:18px;}
+  .roadmap-progress-pct{font-size:18px;}
+  .rm-task-meta{flex-wrap:wrap;gap:4px 10px;}
+  .global-footer{height:42px;min-height:42px;}
+  .mark-popup{right:-60px;min-width:220px;}
+}
+
+/* Touch optimizations for iOS/iPadOS */
+@media(hover:none) and (pointer:coarse){
+  .nav-item{padding:8px 10px 8px 22px;min-height:36px;}
+  .cms-nav-item{padding:10px 16px 10px 20px;min-height:40px;}
+  .fb-item{padding:8px 0;}
+  .fb-item input[type="checkbox"]{width:20px;height:20px;}
+  .rm-task{padding:10px 18px;min-height:48px;}
+  .rm-task input[type="checkbox"]{width:20px;height:20px;}
+  .rm-task-edit{opacity:1;padding:6px 10px;font-size:14px;}
+  .btn{min-height:36px;}
+  .toggle-switch{width:48px;height:26px;}
+  .toggle-switch::after{width:22px;height:22px;}
+  .toggle-switch.on::after{transform:translateX(22px);}
+  .mark-color-row{padding:10px 8px;min-height:44px;}
+  .mark-remove-row{padding:10px 8px;min-height:40px;}
+  .nav-priority-dot{width:14px;height:14px;}
+  .nav-pp-item{width:30px;height:30px;font-size:14px;}
+  .settings-row{padding:12px 0;}
+  /* Disable hover effects that don't work on touch */
+  .nav-item:hover{background:transparent;}
+  .nav-item.active{background:var(--brand-light);}
+  .rm-task:hover{background:transparent;}
+}
+
+/* Safe areas for iOS notch/home indicator */
+@supports(padding-bottom: env(safe-area-inset-bottom)){
+  .global-footer{padding-bottom:env(safe-area-inset-bottom);}
+  .sidebar{top:calc(44px + env(safe-area-inset-top));}
+  .cms-sidebar{top:calc(44px + env(safe-area-inset-top));}
+}
+
+/* Smooth scrolling and momentum on iOS */
+.content-scroll,.roadmap-body,.sidebar-nav,.cms-nav,.feedback-body,.settings-modal-body{
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+}
+
+/* ══════ VLAAMCORE DARK BACKGROUND ══════ */
+.vc-bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(26,109,202,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(26,109,202,0.03) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,black 40%,transparent 80%);
+}
+.vc-bg-glow{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 60%,rgba(26,109,202,0.09) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 70% at 85% 20%,rgba(245,158,11,0.04) 0%,transparent 50%),
+    radial-gradient(ellipse 80% 60% at 50% 110%,rgba(26,109,202,0.06) 0%,transparent 50%);
+}
+.vc-geo{
+  position:fixed;z-index:0;pointer-events:none;
+  border:1px solid rgba(26,109,202,0.05);
+  border-radius:4px;
+}
+.vc-geo-1{width:350px;height:350px;top:-100px;right:5%;transform:rotate(18deg);animation:geoFloat1 22s ease-in-out infinite;}
+.vc-geo-2{width:180px;height:180px;bottom:8%;left:2%;transform:rotate(32deg);border-color:rgba(245,158,11,0.05);animation:geoFloat2 28s ease-in-out infinite;}
+.vc-geo-3{width:500px;height:500px;bottom:-180px;right:-80px;transform:rotate(45deg);animation:geoFloat1 35s ease-in-out infinite reverse;}
+@keyframes geoFloat1{0%,100%{transform:rotate(18deg) translateY(0);}50%{transform:rotate(22deg) translateY(-18px);}}
+@keyframes geoFloat2{0%,100%{transform:rotate(32deg) translateY(0);}50%{transform:rotate(28deg) translateY(-12px);}}
+/* Ensure app layers sit above bg */
+.app-root{position:relative;z-index:1;}
+/* Content scroll dark */
+.content-scroll{background:transparent;}
+/* Sidebar transparent bottom */
+.sidebar-nav{background:transparent;}
+/* Pre blocks in content */
+.content pre{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px;color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;overflow-x:auto;}
+/* CMS sidebar dark */
+.cms-sidebar{background:rgba(10,14,26,0.95)!important;backdrop-filter:blur(20px);}
+.cms-sidebar-header{border-bottom:1px solid rgba(255,255,255,0.06)!important;}
+.cms-nav-item{color:#94a3b8!important;}
+.cms-nav-item:hover{background:rgba(26,109,202,0.1)!important;color:#e2e8f0!important;}
+.cms-nav-item.active{background:rgba(26,109,202,0.15)!important;color:#2b85f0!important;}
+.cms-nav-group-title{color:rgba(100,116,139,0.6)!important;}
+.cms-topbar{background:rgba(10,14,26,0.92)!important;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06)!important;}
+.cms-topbar-title{color:#e2e8f0!important;}
+.cms-main{background:var(--bg)!important;}
+.website-preview{background:rgba(7,9,26,0.8)!important;}
+
+</style>
+</head>
+<body>
+
+<!-- VlaamCore dark background layers -->
+<div class="vc-bg-glow"></div>
+<div class="vc-bg-grid"></div>
+<div class="vc-geo vc-geo-1"></div>
+<div class="vc-geo vc-geo-2"></div>
+<div class="vc-geo vc-geo-3"></div>
+
+<div class="app-root">
+
+<!-- ═══════ TAB BAR ═══════ -->
+<div class="app-tabbar">
+  <div class="app-tab-brand"><span class="brand-dot"></span> <span id="tabBrandName">Drivehub</span></div>
+  <div style="width:12px"></div>
+  <div class="app-tab mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none" id="mobileMenuBtn"><span class="tab-icon">☰</span></div>
+  <div class="app-tab active" data-panel="docs"><span class="tab-icon">📄</span><span class="tab-label-text"> Business Plan</span></div>
+  <div class="app-tab" data-panel="website"><span class="tab-icon">🌐</span><span class="tab-label-text"> Company Websites</span></div>
+  <div class="app-tab" data-panel="roadmap"><span class="tab-icon">🗺️</span><span class="tab-label-text"> Live RoadMap</span></div>
+  <div class="app-tab-spacer"></div>
+  <div class="app-tab" onclick="exportFullJSON()" style="color:var(--accent)"><span class="tab-icon">📥</span><span class="tab-label-text"> Export JSON</span></div>
+  <button class="logout-btn" onclick="doLogout()" title="Return to VlaamCore portal">⬅ Exit Portal</button>
+</div>
+
+<!-- ═══════ PANELS ═══════ -->
+<div class="app-panels">
+
+<!-- PANEL 1: DOCS -->
+<div class="app-panel active" id="panel-docs">
+  <div class="docs-panel">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon" id="logoIcon" onclick="document.getElementById('logoUpload').click()" title="Click to upload logo">
+          <span id="logoText">DH</span>
+          <div class="logo-overlay">📷</div>
+          <input type="file" id="logoUpload" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+        </div>
+        <div class="logo-title" id="projectName" contenteditable="true" spellcheck="false" title="Click to edit project name">Drivehub</div>
+        <div class="logo-sub">MVP Build Plan v1.0 · Q3 2026</div>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" placeholder="Search docs…" oninput="filterNav(this.value)">
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
+      <div class="sidebar-footer">
+        <div class="progress-track"><div class="progress-fill" id="sidebarProgress" style="width:30%"></div></div>
+        <div class="progress-label" id="sidebarProgressLabel">3 of 10 sections</div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+
+    <div class="docs-main">
+      <div class="topbar">
+        <div class="topbar-title" id="topbarTitle"></div>
+        <div class="topbar-actions">
+          <span class="edit-indicator" id="editIndicator"></span>
+          <!-- Mark Text button -->
+          <div class="mark-btn-wrap">
+            <button class="btn" id="markTextBtn" onmousedown="event.preventDefault()" onclick="toggleMarkPopup()">🖍️ Mark Text</button>
+            <div class="mark-popup" id="markPopup" onmousedown="event.preventDefault()">
+              <div class="mark-popup-title">Highlight Selected Text</div>
+              <div class="mark-color-row" onclick="applyHighlight('red')">
+                <span class="mark-swatch sw-red"></span>
+                <span class="mark-label">Red — Highest Priority</span>
+                <span class="mark-badge mb-red">P1</span>
+              </div>
+              <div class="mark-color-row" onclick="applyHighlight('green')">
+                <span class="mark-swatch sw-green"></span>
+                <span class="mark-label">Green — Medium Priority</span>
+                <span class="mark-badge mb-green">P2</span>
+              </div>
+              <div class="mark-color-row" onclick="applyHighlight('blue')">
+                <span class="mark-swatch sw-blue"></span>
+                <span class="mark-label">Blue — Agreed / Low</span>
+                <span class="mark-badge mb-blue">P3</span>
+              </div>
+              <div class="mark-divider"></div>
+              <div class="mark-remove-row" onclick="removeAllHighlights('red')">✕ Remove all <span style="color:#ef4444;font-weight:700">Red</span> highlights</div>
+              <div class="mark-remove-row" onclick="removeAllHighlights('green')">✕ Remove all <span style="color:#22c55e;font-weight:700">Green</span> highlights</div>
+              <div class="mark-remove-row" onclick="removeAllHighlights('blue')">✕ Remove all <span style="color:#3b82f6;font-weight:700">Blue</span> highlights</div>
+              <div class="mark-divider"></div>
+              <div class="mark-remove-row" onclick="removeAllHighlights('all')">🗑️ Remove ALL highlights</div>
+            </div>
+          </div>
+          <button class="btn" id="attachBtn" onclick="openAttachModal()">📎 Attach</button>
+          <button class="btn" id="editBtn" onclick="toggleEdit()">✏️ Edit</button>
+          <button class="btn primary" onclick="exportAllMD()">📄 Export .md</button>
+        </div>
+      </div>
+      <div class="attachments-bar" id="attachmentsBar" style="display:none;"></div>
+      <div class="content-scroll">
+        <div class="content" id="contentArea"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 2: WEBSITE EDITOR — full width preview -->
+<div class="app-panel" id="panel-website">
+  <div class="website-panel">
+    <div class="cms-sidebar">
+      <div class="cms-sidebar-header">
+        <div class="cms-logo">DH</div>
+        <div><div class="cms-title">Site Manager</div><div class="cms-subtitle">drivehub.work · onroute.express</div></div>
+      </div>
+      <div class="cms-nav">
+        <div class="cms-nav-group">
+          <div class="cms-nav-group-title">Company Websites</div>
+          <div class="cms-nav-item active" onclick="selectSite(this,'onroute')"><span class="cms-icon">🌐</span> onroute.express <span class="cms-badge">Live</span></div>
+          <div class="cms-nav-item" onclick="selectSite(this,'drivehub')"><span class="cms-icon">🌐</span> drivehub.work <span class="cms-badge" style="background:rgba(100,116,139,.2);color:#94a3b8">Dev</span></div>
+        </div>
+        <div class="cms-nav-group" id="cmsSubnav">
+          <div class="cms-nav-group-title">onroute.express</div>
+          <div class="cms-nav-sub">
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'pages')"><span class="cms-icon">📃</span> Pages</div>
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'settings')"><span class="cms-icon">⚙️</span> Settings</div>
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'analytics')"><span class="cms-icon">📊</span> Analytics</div>
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'seo')"><span class="cms-icon">🔍</span> SEO</div>
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'feedback')"><span class="cms-icon">💬</span> Feedback <span class="cms-badge">3</span></div>
+            <div class="cms-nav-item" onclick="selectCmsTab(this,'domain')"><span class="cms-icon">🔗</span> Domain & SSL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cms-main" style="position:relative;">
+      <div class="cms-topbar">
+        <div class="cms-topbar-title" id="cmsTopTitle">onroute.express — Live Preview</div>
+        <div class="cms-topbar-actions">
+          <div class="viewmode-group" id="viewModeGroup">
+            <button class="viewmode-btn active" data-mode="desktop" onclick="setViewMode('desktop')" title="Desktop view">🖥️</button>
+            <button class="viewmode-btn" data-mode="tablet" onclick="setViewMode('tablet')" title="Tablet view">📱</button>
+            <button class="viewmode-btn" data-mode="mobile" onclick="setViewMode('mobile')" title="Mobile view">📲</button>
+          </div>
+          <button class="btn sm" onclick="refreshPreview()">🔄 Refresh</button>
+          <button class="btn sm" onclick="openSettingsModal()">⚙️ Settings</button>
+          <button class="btn sm accent" onclick="openFeedbackPanel()">💬 Feedback</button>
+        </div>
+      </div>
+      <div class="website-preview" id="websitePreview">
+        <div class="website-iframe-wrapper mode-desktop" id="iframeWrapper">
+          <div class="device-notch"></div>
+          <div class="website-placeholder" id="websitePlaceholder">
+            <div class="wp-icon">🌐</div>
+            <h3>Website Preview</h3>
+            <p>Select a website from the sidebar to load it. The site renders in a full-width embedded viewer.</p>
+            <br><button class="btn primary" onclick="loadSitePreview('onroute')">Load onroute.express</button>
+          </div>
+          <iframe id="siteIframe" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+          <div class="device-home"></div>
+        </div>
+      </div>
+      <div class="settings-overlay" id="settingsOverlay" onclick="if(event.target===this)closeSettingsModal()">
+        <div class="settings-modal">
+          <div class="settings-modal-header"><h3>⚙️ Site Settings — onroute.express</h3><button class="settings-modal-close" onclick="closeSettingsModal()">✕</button></div>
+          <div class="settings-modal-body">
+            <div class="settings-group"><h4>General</h4>
+              <div class="settings-row"><label>Site Title</label><input class="settings-input" value="OnRoute Express"></div>
+              <div class="settings-row"><label>Tagline</label><input class="settings-input" value="Logistics Made Simple"></div>
+              <div class="settings-row"><label>Language</label><span class="settings-val">English (US)</span></div>
+            </div>
+            <div class="settings-group"><h4>Domain & SSL</h4>
+              <div class="settings-row"><label>Primary Domain</label><span class="settings-val">onroute.express</span></div>
+              <div class="settings-row"><label>SSL Certificate</label><span class="settings-val" style="color:var(--success)">✅ Active (Let's Encrypt)</span></div>
+              <div class="settings-row"><label>Nameservers</label><span class="settings-val">Namecheap BasicDNS</span></div>
+            </div>
+            <div class="settings-group"><h4>Performance</h4>
+              <div class="settings-row"><label>CDN (CloudFlare)</label><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><label>Lazy Load Images</label><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><label>Minify CSS/JS</label><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><label>GZIP Compression</label><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+            <div class="settings-group"><h4>Analytics & Tracking</h4>
+              <div class="settings-row"><label>Google Analytics 4</label><input class="settings-input" placeholder="G-XXXXXXXXXX"></div>
+              <div class="settings-row"><label>Meta Pixel</label><input class="settings-input" placeholder="Pixel ID"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feedback-panel" id="feedbackPanel" style="display:none;">
+      <div class="feedback-panel-header"><h3>💬 Optimization Checklist</h3><button class="btn sm" onclick="closeFeedbackPanel()">✕ Close</button></div>
+      <div class="feedback-body" id="feedbackBody"></div>
+      <div class="feedback-footer">
+        <button class="btn primary" style="flex:1" onclick="saveFeedback()">💾 Save</button>
+        <button class="btn" onclick="exportFeedbackJSON()">📥 JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 3: ROADMAP — centered full width -->
+<div class="app-panel" id="panel-roadmap">
+  <div class="roadmap-panel">
+    <div class="roadmap-header">
+      <h1>🗺️ Live-Mode RoadMap</h1>
+      <p>Drivehub MVP — 90-Day Build Plan · Territory 11 Beta Launch Target | Editable by all team members</p>
+      <div class="roadmap-progress-bar">
+        <div class="roadmap-progress-track"><div class="roadmap-progress-fill" id="roadmapProgressFill" style="width:0%"></div></div>
+        <div class="roadmap-progress-pct" id="roadmapProgressPct">0%</div>
+      </div>
+    </div>
+    <div class="roadmap-body" id="roadmapBody"></div>
+  </div>
+</div>
+
+</div><!-- /panels -->
+
+<!-- ═══════ GLOBAL FOOTER ═══════ -->
+<div class="global-footer">
+  <div class="footer-status"><span class="live-dot"></span> Live Mode</div>
+  <div class="footer-progress">
+    <span class="footer-progress-label">Project:</span>
+    <div class="footer-progress-track"><div class="footer-progress-fill" id="footerProgressFill" style="width:0%"></div></div>
+    <span class="footer-pct" id="footerPct">0%</span>
+  </div>
+  <button class="footer-btn roadmap-btn" onclick="switchPanel('roadmap')">🗺️<span class="btn-label-text"> Live-Mode RoadMap</span></button>
+  <button class="footer-btn json-btn" onclick="exportFullJSON()">📥<span class="btn-label-text"> Export JSON</span></button>
+</div>
+
+</div><!-- /app-root -->
+
+<!-- Highlight Legend floating widget -->
+<div class="hl-legend" id="hlLegend">
+  <div class="hl-legend-title">Active Highlights</div>
+  <div class="hl-legend-row"><span class="hl-legend-swatch" style="background:var(--hl-red-solid)"></span> Red — Highest Priority (P1)</div>
+  <div class="hl-legend-row"><span class="hl-legend-swatch" style="background:var(--hl-green-solid)"></span> Green — Medium Priority (P2)</div>
+  <div class="hl-legend-row"><span class="hl-legend-swatch" style="background:var(--hl-blue-solid)"></span> Blue — Agreed (P3)</div>
+</div>
+
+<!-- ATTACH MODAL -->
+<div class="modal-bg" id="attachModalBg" onclick="if(event.target===this)closeAttachModal()">
+  <div class="modal">
+    <div class="modal-header"><h3>📎 Attach File or Link</h3><button class="settings-modal-close" onclick="closeAttachModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="attach-tabs">
+        <div class="attach-tab active" onclick="switchAttachTab(this,'file')">📷 Photo / File</div>
+        <div class="attach-tab" onclick="switchAttachTab(this,'link')">🔗 Link with Preview</div>
+      </div>
+      <div id="attachFileTab">
+        <div class="attach-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="dz-icon">📁</div>
+          <p><strong>Click or drag files here</strong><br>PNG, JPG, GIF, PDF up to 10MB</p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*,.pdf" multiple style="display:none" onchange="handleFileSelect(event)">
+        <div id="filePreviewArea" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;"></div>
+      </div>
+      <div id="attachLinkTab" style="display:none;">
+        <input class="attach-link-input" id="linkUrlInput" type="url" placeholder="https://example.com/page" oninput="debounceLinkPreview(this.value)">
+        <div id="linkPreviewBox"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAttachModal()">Cancel</button>
+      <button class="btn primary" onclick="confirmAttach()">Attach to Section</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const sections={
+"executive-summary":{title:"Executive Summary",group:"Project Overview",status:"done",priority:"red",
+content:`<h1>Executive Summary — Drivehub</h1>
+<div class="summary-box"><h3>10-Point Summary</h3><ol>
+<li><strong>Product:</strong> Drivehub is a B2B SaaS last-mile delivery management platform + mobile app for US Amazon RSP/DSP operators (50–300 drivers). Route optimization, ePOD, driver reputation, and real-time dispatch — in one platform.</li>
+<li><strong>Market:</strong> US last-mile delivery market $196B in 2025, CAGR 9.6–10.1% through 2032. Amazon Logistics holds 21.2% share and is actively displacing independent DSPs.</li>
+<li><strong>Problem:</strong> Independent RSP/DSP operators have no affordable, purpose-built fleet management tool. Onfleet charges $500–$1,149/mo and lacks RSP-specific features (Walmart SQEP, OnTrac integration, EMOD compliance, DOL 2026 1099 proof).</li>
+<li><strong>Solution:</strong> FlowSkip AI routing (15–25% OPEX reduction), Triangulation of Truth delivery engine, IdentityRegistry reputation vault, and ePOD with Vision AI — purpose-built for the RSP/DSP market.</li>
+<li><strong>Revenue Model:</strong> Per-driver SaaS — $12–$18/driver/month. Target: 50 RSPs × 250 drivers = 12,500 active seats = $150K–$225K MRR at scale.</li>
+<li><strong>Pilot:</strong> Territory 11 — Youngstown, OH. 250 confirmed RSP accounts. Real customer confirmed. Investor engaged.</li>
+<li><strong>Architecture:</strong> Next.js 14 + Supabase (Postgres) + React Native (Expo) mobile. Docker/Railway hosting. n8n for workflow automation.</li>
+<li><strong>Competitive Edge:</strong> Onfleet (primary competitor) has no RSP/DSP-specific modules, no OnTrac integration, no Walmart SQEP compliance, no blockchain reputation. Drivehub fills every gap.</li>
+<li><strong>Legal Risk:</strong> Trademark conflict — Drivehub LLC (Orlando, FL, auto dealerships). USPTO filing required before Q3 2026 launch.</li>
+<li><strong>MVP Target:</strong> Q3 2026. Sprint 1 begins immediately. 90-day build plan active.</li></ol></div>
+<h2>Project Identity</h2>
+<table><tr><th>Attribute</th><th>Detail</th></tr>
+<tr><td>Product Name</td><td>Drivehub</td></tr>
+<tr><td>Legal Entity</td><td>Drivehub Inc. — Chicago, IL, USA</td></tr>
+<tr><td>Product Type</td><td>B2B SaaS Platform + Mobile App</td></tr>
+<tr><td>Market</td><td>US Last-Mile Delivery — RSP/DSP Operators</td></tr>
+<tr><td>ICP</td><td>RSP/DSP with 50–300 drivers (Territory-based operators)</td></tr>
+<tr><td>Pilot Territory</td><td>Territory 11 — Youngstown, OH · 250 RSP accounts</td></tr>
+<tr><td>MVP Target</td><td>Q3 2026</td></tr>
+<tr><td>Status</td><td>Prototype exists · Real customer confirmed · Investor engaged</td></tr>
+<tr><td>Owner</td><td>Dzmitry Patapau — Lead Engineer & Founder</td></tr>
+<tr><td>Primary Competitor</td><td>Onfleet</td></tr>
+<tr><td>IP Risk</td><td>Trademark conflict: Drivehub LLC (Orlando, FL — auto dealerships)</td></tr></table>
+<div class="note warning"><div class="note-title">⚠ Legal Risk</div>USPTO trademark filing required before Q3 2026 launch. Drivehub LLC (Orlando, FL) operates in auto dealerships — different class but same mark. File ASAP.</div>`,attachments:[]},
+
+"market-context":{title:"Market Context & Opportunity",group:"Project Overview",status:"done",priority:"none",
+content:`<h1>US Last-Mile Market Context (2025–2026)</h1>
+<h2>Key Market Metrics</h2>
+<table><tr><th>Metric</th><th>Value</th><th>Confidence</th></tr>
+<tr><td>US Last-Mile Market Size (2025)</td><td>$196B</td><td>HIGH</td></tr>
+<tr><td>CAGR 2025–2032</td><td>9.59%–10.12%</td><td>HIGH</td></tr>
+<tr><td>Deliveries failing first attempt</td><td>53%</td><td>HIGH</td></tr>
+<tr><td>Empty Miles (wasted capacity)</td><td>16.7%</td><td>HIGH</td></tr>
+<tr><td>Average Dwell Time loss</td><td>30 min/stop</td><td>HIGH</td></tr>
+<tr><td>OnTrac network RSPs</td><td>208–390 operators</td><td>HIGH</td></tr>
+<tr><td>Average Unit Economics (current)</td><td>$4.42–$6.52/stop</td><td>HIGH</td></tr>
+<tr><td>FlowSkip Target Unit Economics</td><td>$17.78/stop</td><td>HIGH</td></tr>
+<tr><td>Drivers in Fast Pay pool (potential)</td><td>9,748</td><td>HIGH</td></tr>
+<tr><td>RSP Workers Comp potential</td><td>$111,724/RSP · 50 RSPs = $5.6M pool</td><td>HIGH</td></tr></table>
+<h2>Carrier Market Share (2025)</h2>
+<table><tr><th>Carrier</th><th>Market Share</th></tr>
+<tr><td>UPS</td><td>29.8%</td></tr>
+<tr><td>FedEx</td><td>26.4%</td></tr>
+<tr><td>Amazon Logistics</td><td>21.2%</td></tr>
+<tr><td>USPS</td><td>16.6%</td></tr>
+<tr><td>OnTrac / Regional</td><td>~6%</td></tr></table>
+<h2>Critical Market Trends (2025–2026)</h2>
+<table><tr><th>Trend</th><th>Impact on RSP/DSP</th><th>Drivehub Response</th></tr>
+<tr><td>Amazon Logistics 200 new depots in 2026</td><td>HIGH — squeezing independent DSPs</td><td>FlowSkip reduces OPEX to stay competitive</td></tr>
+<tr><td>DOL Rule 2026: 1099 vs W-2 classification</td><td>HIGH — compliance crisis for DSP fleets</td><td>IdentityRegistry Proof of Autonomy per event</td></tr>
+<tr><td>Walmart SQEP Phase 3 enforcement</td><td>MED — 3% COGS penalty risk</td><td>Vision AI load compliance + Certificate of Truth</td></tr>
+<tr><td>GRI trajectory: 5.9% → 16.2% → 44.6%</td><td>HIGH — margin compression</td><td>Zone Skipping + Empty Cube detection</td></tr>
+<tr><td>Legacy TMS → Agentic AI disruption</td><td>MED — opportunity for new entrants</td><td>Orbit AI + n8n orchestration built-in</td></tr>
+<tr><td>Same-Day delivery window: 35% of orders by 2027</td><td>MED — speed demands increase</td><td>Dynamic Re-routing via Triangulation of Truth</td></tr></table>
+<div class="note"><div class="note-title">ℹ BCG Benchmark [verify]</div>BCG SmartRoutes 2026 pricing benchmark: $23.00–$27.50/stop. Drivehub target: $17.78/stop — 35% below benchmark = strong competitive position.</div>`,attachments:[]},
+
+"icp-value":{title:"ICP & Value Proposition",group:"Project Overview",status:"done",priority:"none",
+content:`<h1>ICP & Value Proposition</h1>
+<h2>Ideal Customer Profile</h2>
+<table><tr><th>Attribute</th><th>Detail</th></tr>
+<tr><td>Segment</td><td>Amazon RSP / Independent DSP operators</td></tr>
+<tr><td>Fleet Size</td><td>50–300 drivers</td></tr>
+<tr><td>Geography</td><td>US territory-based operators (pilot: Territory 11, Youngstown OH)</td></tr>
+<tr><td>Carrier Partners</td><td>OnTrac, Amazon Logistics, USPS, UPS</td></tr>
+<tr><td>Retail Partners</td><td>Walmart GoLocal, B2B + D2C same-day</td></tr>
+<tr><td>Decision Maker</td><td>Owner/Operator or Operations Director</td></tr>
+<tr><td>Current Tools</td><td>Onfleet, spreadsheets, carrier-native apps, manual dispatch</td></tr>
+<tr><td>Annual Revenue</td><td>$2M–$25M (territory-dependent)</td></tr></table>
+<h2>Buyer Personas</h2>
+<h3>Persona 1: "Operator Owen" — RSP Owner</h3>
+<table><tr><th>Attribute</th><th>Detail</th></tr>
+<tr><td>Role</td><td>Owner/Operator, 80–150 driver fleet</td></tr>
+<tr><td>Daily Pain</td><td>Dispatch chaos, driver no-shows, Walmart chargebacks, DOL exposure</td></tr>
+<tr><td>Tech Stack</td><td>Onfleet or spreadsheets + OnTrac portal + manual EMOD tracking</td></tr>
+<tr><td>Decision Budget</td><td>$500–$2,500/mo — approved if ROI is clear</td></tr>
+<tr><td>KPI</td><td>Cost per stop, driver turnover, EMOD score</td></tr></table>
+<h3>Persona 2: "Director Diana" — DSP Operations Director</h3>
+<table><tr><th>Attribute</th><th>Detail</th></tr>
+<tr><td>Role</td><td>Operations Director, 150–300 driver multi-route fleet</td></tr>
+<tr><td>Daily Pain</td><td>Route efficiency, real-time visibility, compliance reporting</td></tr>
+<tr><td>Decision</td><td>Recommends to owner; 2–4 week evaluation cycle</td></tr>
+<tr><td>KPI</td><td>On-time rate, stops/hour, SQEP compliance score</td></tr></table>
+<h2>Value Proposition</h2>
+<div class="note success"><div class="note-title">✅ Core Value Statement</div><strong>"For US RSP/DSP operators managing 50–300 drivers, Drivehub delivers 15–25% OPEX reduction through AI-powered route optimization, automated ePOD, and Walmart SQEP compliance — at half the cost of Onfleet, built specifically for the RSP market."</strong></div>
+<h2>ROI Summary per RSP</h2>
+<table><tr><th>Value Driver</th><th>Annual Impact per RSP</th></tr>
+<tr><td>FlowSkip OPEX reduction (15–25%)</td><td>$180,000–$300,000/RSP</td></tr>
+<tr><td>EMOD Workers Comp reduction (15–20%)</td><td>$111,724/RSP</td></tr>
+<tr><td>Walmart Code 22 chargeback prevention</td><td>$19/dispute × volume</td></tr>
+<tr><td>Empty Miles reduction (16.7%)</td><td>$40,000–$80,000/RSP</td></tr>
+<tr><td>DOL 2026 compliance (avoidance cost)</td><td>$50,000–$500,000 penalty avoidance</td></tr></table>`,attachments:[]},
+
+"product-vision":{title:"Platform Modules & Product Vision",group:"Product",status:"done",priority:"red",
+content:`<h1>Platform Modules & Product Vision</h1>
+<h2>Module Overview</h2>
+<table><tr><th>Module</th><th>TRL</th><th>Priority</th><th>Key ROI</th></tr>
+<tr><td>Module 1: FlowSkip AI (Route Intelligence)</td><td>8</td><td><span class="tag mvp">MVP</span></td><td>15–25% OPEX reduction</td></tr>
+<tr><td>Module 2: Triangulation of Truth (Self-Healing Delivery)</td><td>MED</td><td><span class="tag mvp">MVP</span></td><td>$200K/RSP/year · 17.78% efficiency gain</td></tr>
+<tr><td>Module 3: IdentityRegistry (Reputation Vault On-Chain)</td><td>8–9</td><td><span class="tag mvp">MVP</span></td><td>DOL 2026 compliance + EMOD link</td></tr>
+<tr><td>Module 4: ASNValidatedObject (Freight Intelligence)</td><td>HIGH</td><td><span class="tag mvp">MVP</span></td><td>Walmart Code 22 dispute prevention</td></tr>
+<tr><td>Module 5: SettlementCore (3-Way Match)</td><td>9</td><td><span class="tag phase2">Phase 2</span></td><td>Eliminates $19/dispute chargebacks</td></tr>
+<tr><td>Module 6: Vision AI (SQEP Load Compliance)</td><td>9</td><td><span class="tag phase2">Phase 2</span></td><td>Prevents 3% COGS Walmart penalty</td></tr>
+<tr><td>Module 7: EMOD Bonus Splitter (Smart Contracts)</td><td>HIGH</td><td><span class="tag phase2">Phase 2</span></td><td>$5.6M pool · 50 RSPs</td></tr>
+<tr><td>Module 8: Carbon Credit API (PoGM)</td><td>8</td><td>Phase 3</td><td>IRA credits $340K/EV fleet</td></tr>
+<tr><td>Module 9: RaaS (Robot-as-a-Service)</td><td>MED</td><td>2027</td><td>CAGR 42% YoY</td></tr></table>
+<h2>Module 1: FlowSkip AI — Route Intelligence Engine</h2>
+<table><tr><th>Component</th><th>Description</th></tr>
+<tr><td>Milkrun Optimization</td><td>Heavy-to-Light sequencing, Brick Pattern compliance (Walmart SQEP Phase 3)</td></tr>
+<tr><td>Zone Skipping</td><td>Empty Cube detection, Drop Density +25%, reduces empty miles by 16.7%</td></tr>
+<tr><td>B2B + D2C Logic</td><td>Unified routing for B2B Walmart GoLocal + D2C same-day</td></tr>
+<tr><td>OEE Target</td><td>70% → 92% Overall Equipment Effectiveness</td></tr>
+<tr><td>Agentic AI Core</td><td>Orbit AI + n8n Orchestration — Sense & Respond, Dynamic Re-routing</td></tr>
+<tr><td>Takt Time Monitoring</td><td>Target: 2 min/stop violation alert threshold</td></tr>
+<tr><td>Target Productivity</td><td>1.05 pks/stop — Territory 11 Youngstown</td></tr></table>
+<h2>Module 2: Triangulation of Truth</h2>
+<table><tr><th>Layer</th><th>Technology</th><th>Description</th></tr>
+<tr><td>Layer 1 — Linguistic AI</td><td>Generative AI</td><td>BOL parsing: unstructured notes → structured data</td></tr>
+<tr><td>Layer 2 — Historical Telemetry</td><td>Geofencing</td><td>250 RSP · 12-month GPS history · anomaly detection</td></tr>
+<tr><td>Layer 3 — Customer Feedback</td><td>Push/SMS</td><td>Drop a pin · real-time status correction loop</td></tr></table>
+<h2>Module 3: IdentityRegistry — Reputation Vault</h2>
+<p>On-chain driver reputation system. SHA-256 hashed DriverDID, Merkle Root for safety/training logs, ProfessionalGrade (1–5) driving FlowSkip routing + EMOD. CCPA Zero Trust: PII in HashiCorp Vault, wallet address only on-chain. DOL 2026 Proof of Autonomy per event. Blockchain: Ethereum L2 (Polygon/Arbitrum).</p>
+<div class="note warning"><div class="note-title">⚠ Decision Needed</div>Confirm blockchain deployment: Polygon vs Arbitrum for Phase 2. Cost/latency tradeoff.</div>`,attachments:[]},
+
+"mvp-scope":{title:"MVP Scope (MoSCoW)",group:"Product",status:"done",priority:"red",
+content:`<h1>MVP Feature Scope — MoSCoW Prioritization</h1>
+<div class="note warning"><div class="note-title">⚠ Scope Rule</div>Every MVP feature evaluated: (1) ≤7 days to build? (2) Solves top-3 RSP pain? (3) Production-ready API exists? Features failing any → Phase 2.</div>
+<h2>Must Have (MVP — Q3 2026)</h2>
+<table><tr><th>Feature</th><th>Module</th><th>Owner</th><th>Est. Days</th></tr>
+<tr><td>Multi-tenant org onboarding (RSP/DSP setup)</td><td>Platform</td><td>Dzmitry</td><td>3d</td></tr>
+<tr><td>Driver management CRUD (profile, status, assignment)</td><td>Core</td><td>Dzmitry</td><td>3d</td></tr>
+<tr><td>Route create / assign / dispatch</td><td>Core</td><td>Dzmitry</td><td>4d</td></tr>
+<tr><td>Stop management (address, time window, sequence)</td><td>Core</td><td>Dzmitry</td><td>3d</td></tr>
+<tr><td>FlowSkip v1 — heavy-to-light route optimization</td><td>FlowSkip</td><td>Dzmitry</td><td>5d</td></tr>
+<tr><td>Google Maps geocoding + routing API</td><td>Maps</td><td>Dzmitry</td><td>2d</td></tr>
+<tr><td>Driver mobile app (React Native/Expo) — route view + GPS</td><td>Mobile</td><td>Dzmitry</td><td>7d</td></tr>
+<tr><td>Stop status updates (En Route → Arrived → Delivered)</td><td>Mobile</td><td>Dzmitry</td><td>3d</td></tr>
+<tr><td>ePOD: photo capture + signature</td><td>ePOD</td><td>Dzmitry</td><td>4d</td></tr>
+<tr><td>Dispatcher dashboard: live fleet map + route status</td><td>Web App</td><td>Dzmitry</td><td>5d</td></tr>
+<tr><td>OnTrac API: OAuth, Rating, Order creation, Labels</td><td>Integrations</td><td>Dzmitry</td><td>5d</td></tr>
+<tr><td>OnTrac Webhook receiver (real-time events)</td><td>Integrations</td><td>Dzmitry</td><td>3d</td></tr>
+<tr><td>Supabase Auth + RBAC (Admin / Dispatcher / Driver)</td><td>Auth</td><td>Dzmitry</td><td>2d</td></tr>
+<tr><td>Stripe subscription billing (per-driver pricing)</td><td>Billing</td><td>Dzmitry</td><td>4d</td></tr></table>
+<h2>Should Have (Phase 2 — Q4 2026)</h2>
+<table><tr><th>Feature</th><th>Module</th></tr>
+<tr><td>Triangulation of Truth — Linguistic AI (BOL parsing)</td><td>Module 2</td></tr>
+<tr><td>IdentityRegistry — Reputation Vault v1 (off-chain first)</td><td>Module 3</td></tr>
+<tr><td>USPS Informed Visibility integration (15-min refresh)</td><td>Integrations</td></tr>
+<tr><td>Twilio SMS — driver alerts + customer notifications</td><td>Comms</td></tr>
+<tr><td>Advanced analytics — stops/hr, OTD%, cost/stop</td><td>Analytics</td></tr>
+<tr><td>n8n workflow automation for re-routing triggers</td><td>Automation</td></tr></table>
+<h2>Could Have (Phase 3 — 2027)</h2>
+<table><tr><th>Feature</th><th>Module</th></tr>
+<tr><td>Vision AI — Walmart SQEP load compliance (Brick Pattern)</td><td>Module 6</td></tr>
+<tr><td>SettlementCore 3-Way Match + Smart Escrow</td><td>Module 5</td></tr>
+<tr><td>EMOD Bonus Splitter (Chainlink smart contracts)</td><td>Module 7</td></tr>
+<tr><td>Carbon Credit API (PoGM — Proof of Green Mile)</td><td>Module 8</td></tr>
+<tr><td>RaaS integration (Robot-as-a-Service)</td><td>Module 9</td></tr></table>
+<h2>Won't Have (MVP)</h2>
+<ul><li>Full blockchain IdentityRegistry (on-chain) — IPFS + Polygon deployment</li><li>Amazon Flex API direct integration</li><li>BigCommerce / TikTok Shop channels</li><li>AI demand forecasting</li><li>EV fleet telematics (BMS/V2X)</li></ul>`,attachments:[]},
+
+"onfleet-analysis":{title:"Onfleet Deep Analysis",group:"Competitive Intel",status:"done",priority:"red",
+content:`<h1>Onfleet — Primary Competitor Deep Analysis</h1>
+<div class="note"><div class="note-title">ℹ Primary Competitor</div>All Drivehub feature, pricing, and positioning decisions must benchmark against Onfleet first.</div>
+<h2>Onfleet Pricing (2025) [verify]</h2>
+<table><tr><th>Plan</th><th>Monthly Price</th><th>Tasks/mo</th><th>Key Features</th></tr>
+<tr><td>Launch</td><td>$500/mo</td><td>2,000</td><td>Basic routing, ePOD, tracking</td></tr>
+<tr><td>Scale</td><td>$1,149/mo</td><td>5,000</td><td>Route optimization, analytics, API</td></tr>
+<tr><td>Enterprise</td><td>Custom</td><td>Unlimited</td><td>Custom integrations, SLA, SSO</td></tr></table>
+<h2>Onfleet Feature Gap Analysis vs Drivehub</h2>
+<table><tr><th>Feature Area</th><th>Onfleet</th><th>Drivehub</th><th>Advantage</th></tr>
+<tr><td>RSP/DSP-specific workflow</td><td>❌ Generic TMS</td><td>✅ Built for RSP</td><td>Drivehub</td></tr>
+<tr><td>OnTrac carrier integration</td><td>❌ Not available</td><td>✅ 4 endpoints</td><td>Drivehub</td></tr>
+<tr><td>Walmart SQEP compliance</td><td>❌ None</td><td>✅ Vision AI + ePOD</td><td>Drivehub</td></tr>
+<tr><td>DOL 2026 1099 proof</td><td>❌ None</td><td>✅ Proof of Autonomy</td><td>Drivehub</td></tr>
+<tr><td>EMOD workers comp linkage</td><td>❌ None</td><td>✅ Module 7</td><td>Drivehub</td></tr>
+<tr><td>Driver reputation/on-chain</td><td>❌ None</td><td>✅ IdentityRegistry</td><td>Drivehub</td></tr>
+<tr><td>FlowSkip zone-skipping AI</td><td>⚠ Basic routing</td><td>✅ AI + n8n</td><td>Drivehub</td></tr>
+<tr><td>Triangulation of Truth</td><td>❌ None</td><td>✅ 3-layer engine</td><td>Drivehub</td></tr>
+<tr><td>Route optimization</td><td>✅ Yes</td><td>✅ Yes (advanced)</td><td>Tie / Drivehub</td></tr>
+<tr><td>ePOD + photo + signature</td><td>✅ Yes</td><td>✅ Yes</td><td>Tie</td></tr>
+<tr><td>Real-time driver tracking</td><td>✅ Yes</td><td>✅ Yes</td><td>Tie</td></tr>
+<tr><td>Customer notifications (SMS)</td><td>✅ Yes</td><td>✅ Twilio (Phase 2)</td><td>Onfleet (MVP)</td></tr>
+<tr><td>API + webhooks</td><td>✅ Full REST</td><td>✅ Full REST</td><td>Tie</td></tr>
+<tr><td>Pricing for 100 drivers</td><td>~$1,149+/mo</td><td>$1,200–$1,800/mo</td><td>Parity (more features)</td></tr>
+<tr><td>Pricing for 50 drivers</td><td>$500–$1,149/mo</td><td>$600–$900/mo</td><td>Drivehub (feature premium)</td></tr></table>
+<h2>Onfleet Weaknesses to Exploit</h2>
+<ul>
+<li><strong>No RSP-specific modules</strong> — Onfleet is horizontal TMS, not vertical RSP. Drivehub wins on depth.</li>
+<li><strong>No carrier integrations</strong> — OnTrac, USPS Informed Visibility gap is our primary wedge.</li>
+<li><strong>No compliance tooling</strong> — DOL 2026 and Walmart SQEP are existential threats to RSPs; Onfleet ignores them.</li>
+<li><strong>Pricing cliff</strong> — $500 → $1,149 jump with limited mid-tier creates displacement opportunity.</li>
+<li><strong>No mobile-first driver UX for RSP workflows</strong> — Generic delivery app vs. RSP-native experience.</li></ul>
+<div class="solutions-box"><h3>✅ Drivehub Positioning vs Onfleet</h3><ul>
+<li>"Onfleet built for pizza delivery. Drivehub built for Amazon RSPs."</li>
+<li>"The only platform with OnTrac integration + DOL 2026 compliance built-in."</li>
+<li>"15–25% OPEX reduction with FlowSkip — no other platform offers this for RSPs."</li></ul></div>`,attachments:[]},
+
+"competitor-matrix":{title:"Full Competitor Matrix",group:"Competitive Intel",status:"done",priority:"none",
+content:`<h1>Full Competitor Matrix</h1>
+<table><tr><th>Competitor</th><th>Pricing</th><th>Strengths</th><th>Weaknesses</th><th>Drivehub Edge</th></tr>
+<tr><td><strong>Onfleet</strong></td><td>$500–$1,149/mo</td><td>Strong routing, ePOD, brand recognition</td><td>No RSP modules, no OnTrac, no compliance</td><td>RSP-native + compliance + AI routing</td></tr>
+<tr><td><strong>Bringg</strong></td><td>Enterprise ($2K+/mo)</td><td>Enterprise logistics, multi-carrier</td><td>Too expensive for RSP/DSP operators</td><td>Affordable + RSP-specific</td></tr>
+<tr><td><strong>Circuit</strong></td><td>$100–$300/mo</td><td>Simple, affordable route planning</td><td>No ePOD, no integrations, no analytics</td><td>Full platform vs. route-only tool</td></tr>
+<tr><td><strong>Routific</strong></td><td>$49–$149/driver/mo</td><td>Good route optimization</td><td>No carrier integrations, no mobile ePOD</td><td>Carrier-integrated + mobile-first</td></tr>
+<tr><td><strong>Track-POD</strong></td><td>$29–$69/driver/mo</td><td>Affordable ePOD</td><td>Basic routing, no AI, no compliance</td><td>AI routing + compliance + reputation</td></tr>
+<tr><td><strong>Detrack</strong></td><td>$0.50/task</td><td>Pay-per-use, simple</td><td>No RSP features, transactional only</td><td>Subscription + full RSP platform</td></tr></table>
+<h2>Pricing Benchmark (100-Driver Fleet)</h2>
+<table><tr><th>Platform</th><th>100 Drivers Monthly Cost</th><th>RSP-Specific Features</th></tr>
+<tr><td>Onfleet Scale</td><td>$1,149/mo</td><td>❌ None</td></tr>
+<tr><td>Routific</td><td>$4,900–$14,900/mo</td><td>❌ None</td></tr>
+<tr><td>Track-POD</td><td>$2,900–$6,900/mo</td><td>❌ None</td></tr>
+<tr><td>Bringg</td><td>$2,000–$5,000/mo</td><td>⚠ Partial</td></tr>
+<tr><td><strong>Drivehub (target)</strong></td><td><strong>$1,200–$1,800/mo</strong></td><td>✅ Full RSP suite</td></tr></table>`,attachments:[]},
+
+"pricing-strategy":{title:"Pricing Strategy",group:"Business Model",status:"wip",priority:"red",
+content:`<h1>Pricing Strategy — Drivehub</h1>
+<div class="note warning"><div class="note-title">[decision needed] Pricing Model</div>Per-driver is recommended. Validate with pilot customer before finalizing. See options below.</div>
+<h2>Recommended: Per-Driver Subscription</h2>
+<table><tr><th>Tier</th><th>Price/Driver/Mo</th><th>Annual Discount</th><th>Fleet Range</th><th>Monthly Revenue (100 drivers)</th></tr>
+<tr><td>Starter</td><td>$15/driver</td><td>20% ($12/driver)</td><td>10–49 drivers</td><td>$1,500/mo</td></tr>
+<tr><td>Growth</td><td>$14/driver</td><td>20% ($11.20/driver)</td><td>50–149 drivers</td><td>$1,400/mo</td></tr>
+<tr><td>Scale</td><td>$12/driver</td><td>20% ($9.60/driver)</td><td>150–300 drivers</td><td>$1,200/mo</td></tr>
+<tr><td>Enterprise</td><td>Custom</td><td>Custom</td><td>300+ drivers</td><td>Custom</td></tr></table>
+<h2>Revenue Projections</h2>
+<table><tr><th>Scenario</th><th>RSPs</th><th>Avg Drivers/RSP</th><th>MRR</th><th>ARR</th></tr>
+<tr><td>Pilot (T11 beta)</td><td>5</td><td>80</td><td>$5,600</td><td>$67,200</td></tr>
+<tr><td>Territory 11 Full</td><td>50</td><td>120</td><td>$72,000</td><td>$864,000</td></tr>
+<tr><td>3-Territory Scale</td><td>150</td><td>150</td><td>$252,000</td><td>$3,024,000</td></tr>
+<tr><td>National Scale</td><td>500</td><td>200</td><td>$1,200,000</td><td>$14,400,000</td></tr></table>
+<h2>Alternative Pricing Models Considered</h2>
+<table><tr><th>Model</th><th>Pros</th><th>Cons</th><th>Decision</th></tr>
+<tr><td>Per-stop ($0.10–$0.25/stop)</td><td>Aligns with usage</td><td>Variable revenue, hard to forecast</td><td>❌ Rejected for MVP</td></tr>
+<tr><td>Flat monthly fee ($499–$1,499)</td><td>Simple</td><td>Doesn't scale with fleet size</td><td>❌ Rejected</td></tr>
+<tr><td>Per-driver/month ✅</td><td>Scales with value, predictable</td><td>Churn risk if fleet shrinks</td><td>✅ Recommended</td></tr>
+<tr><td>Hybrid (flat + per-stop overage)</td><td>Floor + upside</td><td>Complex billing</td><td>⚠ Phase 2 consideration</td></tr></table>
+<h2>Module Add-Ons (Phase 2+)</h2>
+<table><tr><th>Add-On</th><th>Price</th><th>Module</th></tr>
+<tr><td>Vision AI (SQEP compliance)</td><td>$3/driver/mo</td><td>Module 6</td></tr>
+<tr><td>IdentityRegistry On-Chain</td><td>$2/driver/mo</td><td>Module 3</td></tr>
+<tr><td>EMOD Bonus Splitter</td><td>% of savings (5–10%)</td><td>Module 7</td></tr>
+<tr><td>Carbon Credit API</td><td>% of credits generated</td><td>Module 8</td></tr></table>`,attachments:[]},
+
+"gtm-plan":{title:"GTM Strategy",group:"Business Model",status:"wip",priority:"none",
+content:`<h1>Go-To-Market Strategy</h1>
+<h2>GTM Phase 1: Territory 11 Pilot (Q3 2026)</h2>
+<table><tr><th>Action</th><th>Target</th><th>Owner</th><th>Timeline</th></tr>
+<tr><td>Activate confirmed pilot customer</td><td>1 RSP, 80–120 drivers</td><td>Dzmitry</td><td>MVP launch</td></tr>
+<tr><td>Territory 11 outreach (OnTrac network)</td><td>25 RSPs in Youngstown OH area</td><td>Dzmitry</td><td>Month 1–2 post-launch</td></tr>
+<tr><td>LinkedIn outreach — RSP operators</td><td>250 RSP accounts identified</td><td>Dzmitry</td><td>Pre-launch</td></tr>
+<tr><td>Case study from pilot RSP</td><td>"X% cost reduction in 60 days"</td><td>Dzmitry</td><td>Month 2 post-launch</td></tr>
+<tr><td>ROI calculator tool (public landing page)</td><td>Lead gen on drivehub.work</td><td>Dzmitry</td><td>Pre-launch</td></tr></table>
+<h2>GTM Phase 2: Carrier Network Expansion (Q4 2026)</h2>
+<ul>
+<li>OnTrac RSP network (208–390 operators nationwide)</li>
+<li>Amazon DSP program direct outreach</li>
+<li>Walmart GoLocal carrier partners</li>
+<li>Insurance broker channel: Marsh + NCCI (EMOD module as wedge)</li>
+<li>DOL 2026 compliance anxiety: "Are you protected?" messaging</li></ul>
+<h2>Positioning</h2>
+<div class="note success"><div class="note-title">✅ Primary Message</div>"The only fleet management platform built for Amazon RSPs — with OnTrac integration, DOL 2026 compliance, and AI routing that cuts cost-per-stop by 15–25%."</div>
+<h2>Channel Strategy</h2>
+<table><tr><th>Channel</th><th>Tactic</th><th>Priority</th></tr>
+<tr><td>Direct outreach</td><td>LinkedIn + cold email to T11 RSP operators</td><td>HIGH</td></tr>
+<tr><td>RSP/DSP associations</td><td>DSP Conference, Amazon DSP forums</td><td>HIGH</td></tr>
+<tr><td>Insurance brokers</td><td>Marsh, NCCI — EMOD module as partnership</td><td>MED</td></tr>
+<tr><td>Content marketing</td><td>"DOL 2026 RSP survival guide" lead magnet</td><td>MED</td></tr>
+<tr><td>Pilot referrals</td><td>T11 customer → neighboring territory</td><td>HIGH</td></tr></table>`,attachments:[]},
+
+"tech-stack":{title:"Technology Stack",group:"Technology",status:"done",priority:"red",
+content:`<h1>Technology Stack — Drivehub</h1>
+<h2>Final Stack Decision</h2>
+<table><tr><th>Layer</th><th>Technology</th><th>Rationale</th></tr>
+<tr><td>Frontend (Web)</td><td>Next.js 14 + TypeScript + Tailwind CSS</td><td>SSR, App Router, Vercel deploy, team familiarity</td></tr>
+<tr><td>Mobile App</td><td>React Native + Expo (managed workflow)</td><td>Code share with web, OTA updates, GPS/camera APIs</td></tr>
+<tr><td>Backend/API</td><td>Next.js API Routes + Supabase Edge Functions</td><td>Serverless, no infra management, auto-scale</td></tr>
+<tr><td>Database</td><td>Supabase (PostgreSQL 15) + Row Level Security</td><td>Multi-tenant native, real-time subscriptions, CCPA-safe</td></tr>
+<tr><td>Auth</td><td>Supabase Auth + JWT + RBAC</td><td>Built-in, social auth, MFA ready</td></tr>
+<tr><td>File Storage</td><td>Supabase Storage (S3-compatible)</td><td>ePOD photos, labels, training docs — same SDK</td></tr>
+<tr><td>Real-Time</td><td>Supabase Realtime (WebSocket)</td><td>Live driver tracking, dispatch updates</td></tr>
+<tr><td>Workflow Automation</td><td>n8n (self-hosted on Railway)</td><td>FlowSkip triggers, alerts, integrations — no-code layer</td></tr>
+<tr><td>Maps/Routing</td><td>Google Maps Platform (Geocoding + Routes + Maps JS)</td><td>Best accuracy, Directions API for route optimization</td></tr>
+<tr><td>Payments/Billing</td><td>Stripe (subscriptions + metered billing)</td><td>Per-driver pricing, customer portal, webhooks</td></tr>
+<tr><td>SMS/Comms</td><td>Twilio (Phase 2)</td><td>Driver alerts, customer delivery notifications</td></tr>
+<tr><td>Hosting (Web)</td><td>Vercel (frontend) + Railway (n8n + services)</td><td>Zero-config deploy, preview URLs, Railway for stateful</td></tr>
+<tr><td>CI/CD</td><td>GitHub Actions → Vercel auto-deploy</td><td>PR previews, staging, production</td></tr>
+<tr><td>Monitoring</td><td>Sentry (errors) + Vercel Analytics</td><td>Error tracking, performance monitoring</td></tr>
+<tr><td>Secrets</td><td>Supabase Vault + GitHub Secrets</td><td>API keys, OnTrac tokens, HMAC secrets</td></tr>
+<tr><td>Blockchain (Phase 2)</td><td>Ethereum L2 — Polygon or Arbitrum</td><td>IdentityRegistry + EMOD Splitter smart contracts</td></tr>
+<tr><td>AI/ML</td><td>AWS Bedrock (Vision AI) + OpenAI API (Linguistic AI)</td><td>SQEP load compliance, BOL parsing</td></tr></table>
+<h2>Mobile App Decision: React Native vs Flutter vs PWA</h2>
+<table><tr><th>Option</th><th>Pros</th><th>Cons</th><th>Decision</th></tr>
+<tr><td>React Native (Expo)</td><td>Code share with Next.js, large ecosystem, GPS/camera native</td><td>Larger bundle, Expo managed limitations</td><td>✅ CHOSEN</td></tr>
+<tr><td>Flutter</td><td>Performance, single codebase</td><td>Dart learning curve, no web code share</td><td>❌ Rejected</td></tr>
+<tr><td>PWA</td><td>No app store, easy deploy</td><td>Limited GPS accuracy, no background tracking</td><td>❌ Rejected (background GPS required)</td></tr></table>
+<div class="note success"><div class="note-title">✅ Stack Rationale</div>Supabase + Next.js + React Native is the fastest path to MVP given Dzmitry's existing stack context. Supabase RLS handles multi-tenancy natively. n8n provides automation without custom code. Total infra cost estimate: $200–$400/mo at MVP scale.</div>`,attachments:[]},
+
+"architecture":{title:"System Architecture",group:"Technology",status:"done",priority:"none",
+content:`<h1>System Architecture — Drivehub</h1>
+<h2>High-Level Architecture</h2>
+<pre style="background:var(--code-bg);padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;line-height:1.7">
+┌─────────────────────────────────────────────────────────────────────┐
+│                         DRIVEHUB PLATFORM                           │
+├──────────────────────┬──────────────────────┬───────────────────────┤
+│   Web App (Next.js)  │  Mobile (React Native)│    Admin Portal       │
+│   Dispatcher/Manager │  Driver App (Expo)    │    DSP Owner          │
+└──────────┬───────────┴──────────┬────────────┴────────────┬──────────┘
+           │                      │                          │
+           └──────────────────────▼──────────────────────────┘
+                           Supabase API Layer
+                    ┌──────────────────────────────┐
+                    │  Auth · REST · Realtime WS   │
+                    │  Row Level Security (RLS)     │
+                    └──────────┬───────────────────┘
+                               │
+           ┌───────────────────▼────────────────────┐
+           │          PostgreSQL (Supabase)           │
+           │  orgs · drivers · routes · stops        │
+           │  pods · asn_records · service_zones     │
+           └───────────────────────────────────────────┘
+                    │                    │
+         ┌──────────▼──────┐   ┌─────────▼──────────┐
+         │  Supabase Storage│   │ Supabase Realtime  │
+         │  ePOD photos     │   │ Live tracking WS   │
+         │  ZPL labels      │   │ Dispatcher feed    │
+         └─────────────────┘   └────────────────────┘
+
+External Integrations:
+  OnTrac API ──────► Rating · Orders · Labels · Webhooks
+  Google Maps ─────► Geocoding · Routes · Maps JS
+  Stripe ──────────► Subscriptions · Metered billing
+  n8n (Railway) ───► FlowSkip triggers · Alerts · Automation
+  Twilio (Phase 2) ► SMS driver/customer notifications
+  AWS Bedrock ─────► Vision AI (SQEP) · Phase 2
+  OpenAI API ──────► Linguistic AI (BOL parsing) · Phase 2
+  Polygon L2 ──────► IdentityRegistry smart contracts · Phase 2
+</pre>
+<h2>Multi-Tenant Architecture</h2>
+<table><tr><th>Concern</th><th>Implementation</th></tr>
+<tr><td>Tenant Isolation</td><td>Supabase RLS: every table has org_id, policies enforce per-tenant access</td></tr>
+<tr><td>Auth</td><td>Supabase Auth JWT contains org_id claim; RLS uses auth.jwt() → org_id</td></tr>
+<tr><td>Data Separation</td><td>Shared schema with RLS (no schema-per-tenant at MVP scale)</td></tr>
+<tr><td>File Isolation</td><td>Supabase Storage bucket paths: /orgs/{org_id}/pods/ · /labels/{org_id}/</td></tr>
+<tr><td>Billing</td><td>Stripe customer per org; metered driver seats via Stripe Usage API</td></tr></table>`,attachments:[]},
+
+"data-model":{title:"Core Data Model",group:"Technology",status:"done",priority:"none",
+content:`<h1>Core Data Model — Drivehub</h1>
+<h2>Primary Entities</h2>
+<table><tr><th>Entity</th><th>Key Fields</th><th>Relations</th></tr>
+<tr><td><code>organizations</code></td><td>id, name, type (RSP/DSP), stripe_customer_id, plan, status</td><td>→ drivers, routes, stops</td></tr>
+<tr><td><code>drivers</code></td><td>id, org_id, name, phone, license, status, professional_grade, wallet_address</td><td>→ org, route_assignments</td></tr>
+<tr><td><code>routes</code></td><td>id, org_id, driver_id, date, status, vehicle_id, total_stops, optimized_sequence</td><td>→ stops, driver, org</td></tr>
+<tr><td><code>stops</code></td><td>id, route_id, org_id, sequence, address, lat, lng, status, time_window_start/end, ontrac_order_id, pod_id</td><td>→ route, pod</td></tr>
+<tr><td><code>pods</code></td><td>id, stop_id, org_id, photo_url, signature_url, delivered_at, lat, lng, recipient_name, exception_code</td><td>→ stop</td></tr>
+<tr><td><code>asn_records</code></td><td>id, org_id, asn_id, walmart_po_ref, sku_matrix, digital_weight, asn_hash, pro_number</td><td>→ stops</td></tr>
+<tr><td><code>service_zones</code></td><td>id, org_id, origin_zip, dest_zip, service_code, transit_days, cached_at</td><td>→ org (OnTrac cache)</td></tr>
+<tr><td><code>driver_reputation</code></td><td>id, driver_id, org_id, event_type, safety_score, training_log, merkle_root, manager_signature</td><td>→ driver</td></tr></table>
+<h2>Key Indexes & Constraints</h2>
+<ul>
+<li>All tables: <code>org_id</code> indexed + RLS enforced</li>
+<li><code>stops</code>: composite index on <code>(route_id, sequence)</code></li>
+<li><code>stops</code>: index on <code>ontrac_order_id</code> for webhook lookups</li>
+<li><code>service_zones</code>: unique on <code>(org_id, origin_zip, dest_zip)</code></li>
+<li><code>pods</code>: unique on <code>stop_id</code> (one POD per stop)</li></ul>
+<h2>Stop Status State Machine</h2>
+<pre style="background:var(--code-bg);padding:12px;border-radius:6px;font-size:12px">
+PENDING → ASSIGNED → DISPATCHED → EN_ROUTE → ARRIVED → DELIVERED
+                                                      ↘ FAILED → RESCHEDULED
+                                                      ↘ EXCEPTION → RETURNED
+</pre>`,attachments:[]},
+
+"api-integrations":{title:"API Integrations",group:"Technology",status:"done",priority:"none",
+content:`<h1>API Integrations Required</h1>
+<table><tr><th>API</th><th>Purpose</th><th>Auth Method</th><th>Priority</th><th>Notes</th></tr>
+<tr><td>OnTrac API</td><td>Rating · Service Zones · Order creation · Labels · Webhooks</td><td>OAuth 2.0 (3600s token, auto-refresh)</td><td><span class="tag mvp">MVP</span></td><td>Sandbox: ZIP 90001–90010 · Rate limit: 60 req/min</td></tr>
+<tr><td>Google Maps Platform</td><td>Geocoding · Routes API · Maps JS (dispatcher map)</td><td>API Key (server-side)</td><td><span class="tag mvp">MVP</span></td><td>Enable: Geocoding, Directions, Maps JS, Places APIs</td></tr>
+<tr><td>Stripe</td><td>Subscriptions · Metered billing · Customer portal</td><td>Secret Key + Webhook signing</td><td><span class="tag mvp">MVP</span></td><td>Per-driver metered usage via Stripe Usage Records</td></tr>
+<tr><td>Supabase</td><td>DB · Auth · Storage · Realtime</td><td>anon key + service_role key</td><td><span class="tag mvp">MVP</span></td><td>All stored in env vars via Railway/Vercel</td></tr>
+<tr><td>Twilio</td><td>Driver SMS alerts · Customer delivery notifications</td><td>Account SID + Auth Token</td><td><span class="tag phase2">Phase 2</span></td><td>Programmable SMS · WhatsApp optional</td></tr>
+<tr><td>USPS Informed Visibility</td><td>Package presence intelligence · 15-min refresh</td><td>API Key</td><td><span class="tag phase2">Phase 2</span></td><td>5 RSP avg · feeds Triangulation Layer 2</td></tr>
+<tr><td>OpenAI API</td><td>BOL linguistic parsing (Triangulation Layer 1)</td><td>Bearer token</td><td><span class="tag phase2">Phase 2</span></td><td>GPT-4o for address normalization</td></tr>
+<tr><td>AWS Bedrock</td><td>Vision AI — Walmart SQEP load compliance</td><td>AWS IAM</td><td>Phase 3</td><td>Custom model for Brick Pattern + TIHI detection</td></tr>
+<tr><td>Chainlink Functions</td><td>EMOD API trigger → smart contract</td><td>On-chain</td><td>Phase 3</td><td>Connects to Marsh/NCCI EMOD API</td></tr>
+<tr><td>Polygon/Arbitrum</td><td>IdentityRegistry on-chain deployment</td><td>Private key (Vault)</td><td>Phase 3</td><td>L2 for gas cost reduction</td></tr></table>
+<h2>OnTrac Integration Notes</h2>
+<table><tr><th>Concern</th><th>Detail</th></tr>
+<tr><td>Auth token refresh</td><td>OAuth 2.0 tokens expire in 3600s; implement auto-refresh with 60s buffer</td></tr>
+<tr><td>Rate limiting</td><td>Rating: 60 req/min — batch with bulk Zone lookup at RSP onboarding</td></tr>
+<tr><td>Zone cache strategy</td><td>Pre-load all T11 ZIP pairs at DSP signup → service_zones table</td></tr>
+<tr><td>Webhook HMAC</td><td>Store shared secret in Supabase Vault; rotate quarterly</td></tr>
+<tr><td>Retry policy</td><td>429/500: exponential backoff (1s, 2s, 4s, 8s, max 3 retries)</td></tr>
+<tr><td>Label storage</td><td>ZPL labels → Supabase Storage /labels/{org_id}/{order_id}.zpl</td></tr>
+<tr><td>Webhook idempotency</td><td>Use tracking_id + event_type + timestamp as dedup key in DB</td></tr>
+<tr><td>Sandbox testing</td><td>Use ZIP 90001→90010 range for guaranteed sandbox coverage</td></tr></table>`,attachments:[]},
+
+"trademark-ip":{title:"Trademark & IP Strategy",group:"Legal & IP",status:"wip",priority:"red",
+content:`<h1>Trademark & IP Strategy</h1>
+<div class="note warning"><div class="note-title">⚠ Legal Risk — Action Required</div>Drivehub LLC (Orlando, FL) is a registered entity operating in auto dealerships. Different industry class, but same mark. USPTO filing required BEFORE public launch to establish priority date.</div>
+<h2>Trademark Situation</h2>
+<table><tr><th>Factor</th><th>Detail</th></tr>
+<tr><td>Our mark</td><td>DRIVEHUB (word mark)</td></tr>
+<tr><td>Conflicting entity</td><td>Drivehub LLC — Orlando, FL — Auto Dealerships</td></tr>
+<tr><td>Class difference</td><td>We: SaaS logistics (Class 42 / 35) · Them: Auto services (Class 37/39)</td></tr>
+<tr><td>Risk level</td><td>MEDIUM — different classes, but consumer confusion possible</td></tr>
+<tr><td>Recommended action</td><td>File USPTO intent-to-use (ITU) application immediately</td></tr>
+<tr><td>Timeline</td><td>File before any public marketing or product launch</td></tr></table>
+<h2>USPTO Filing Strategy</h2>
+<table><tr><th>Step</th><th>Action</th><th>Cost</th><th>Timeline</th></tr>
+<tr><td>1</td><td>Full trademark clearance search (Thomson CompuMark or similar)</td><td>$500–$1,500</td><td>Week 1</td></tr>
+<tr><td>2</td><td>File USPTO Intent-to-Use (ITU) application — Class 42 (SaaS)</td><td>$350/class</td><td>Week 2</td></tr>
+<tr><td>3</td><td>File Class 35 (business management software) as secondary class</td><td>$350/class</td><td>Week 2</td></tr>
+<tr><td>4</td><td>USPTO examination period</td><td>—</td><td>8–12 months</td></tr>
+<tr><td>5</td><td>Statement of Use filing once MVP launches</td><td>$150</td><td>At launch</td></tr></table>
+<h2>IP Protection Beyond Trademark</h2>
+<ul>
+<li><strong>Trade Secrets:</strong> FlowSkip algorithm, Triangulation of Truth 3-layer engine, IdentityRegistry data architecture — protected via NDAs and access control</li>
+<li><strong>Copyright:</strong> Source code automatically protected; register key modules with US Copyright Office</li>
+<li><strong>Patents:</strong> Consider provisional patent for FlowSkip + Triangulation combination (12-month window to file full utility patent)</li>
+<li><strong>Domain:</strong> drivehub.work registered · Secure drivehub.com, drivehub.io, drivehub.app if available</li></ul>
+<div class="note warning"><div class="note-title">⚠ Decision Needed</div>Engage IP attorney for clearance search + USPTO filing. Budget: $2,000–$5,000. Timeline: Before Month 2 of build.</div>`,attachments:[]},
+
+"ccpa-compliance":{title:"CCPA & Legal Compliance",group:"Legal & IP",status:"wip",priority:"none",
+content:`<h1>CCPA, DOL 2026 & Legal Compliance</h1>
+<h2>CCPA Zero Trust Architecture</h2>
+<table><tr><th>Data Type</th><th>Storage</th><th>Access</th></tr>
+<tr><td>Driver PII (Name, DOB, SSN)</td><td>AES-256 encrypted blob in Supabase Vault</td><td>Subpoena-level only</td></tr>
+<tr><td>DriverInternalID (UUID)</td><td>Supabase DB (not exposed to UI)</td><td>System-internal only</td></tr>
+<tr><td>DriverDIDHash (SHA-256)</td><td>On-chain (Polygon L2) — Phase 2</td><td>Public (anonymized)</td></tr>
+<tr><td>WalletAddress</td><td>Mapping table in Vault only</td><td>System-internal only</td></tr>
+<tr><td>GPS/Location data</td><td>Supabase DB with RLS + org_id isolation</td><td>Dispatcher + org admin only</td></tr>
+<tr><td>ePOD photos</td><td>Supabase Storage: /orgs/{org_id}/pods/</td><td>Org admin + driver only</td></tr></table>
+<h2>DOL 2026 — 1099 vs W-2 Compliance</h2>
+<p>DOL Rule 2026 creates existential risk for DSP operators using 1099 contractors. Drivehub's IdentityRegistry provides "Proof of Autonomy" — per-event documentation proving independent contractor status.</p>
+<table><tr><th>Compliance Element</th><th>Drivehub Implementation</th></tr>
+<tr><td>Behavioral control evidence</td><td>Driver self-selects routes, sets own schedule — logged per event</td></tr>
+<tr><td>Financial control evidence</td><td>Fast Pay integration, EMOD bonus direct to driver wallet</td></tr>
+<tr><td>Relationship type evidence</td><td>ProfessionalGrade drives assignments (not employer control)</td></tr>
+<tr><td>Audit trail</td><td>Merkle Root + Ed25519 manager signature per event — immutable log</td></tr></table>
+<h2>Additional Compliance Requirements</h2>
+<table><tr><th>Area</th><th>Requirement</th><th>Timeline</th></tr>
+<tr><td>Data Privacy</td><td>CCPA/CPRA privacy policy + consent flows from Day 1</td><td>MVP launch</td></tr>
+<tr><td>Terms of Service</td><td>SaaS MSA + DPA (Data Processing Agreement)</td><td>MVP launch</td></tr>
+<tr><td>Security</td><td>SOC 2 Type I preparation</td><td>Month 6 post-launch</td></tr>
+<tr><td>Transport Security</td><td>TLS 1.3 in transit, AES-256 at rest</td><td>MVP launch</td></tr>
+<tr><td>Entity</td><td>Drivehub Inc. (IL C-Corp or Delaware C-Corp)</td><td>Before investor closing</td></tr></table>`,attachments:[]},
+
+"financial-model":{title:"Financial Model",group:"Execution",status:"wip",priority:"none",
+content:`<h1>Financial Model & Projections</h1>
+<h2>Pre-Launch Budget</h2>
+<table><tr><th>Item</th><th>Estimated Cost</th></tr>
+<tr><td>Infrastructure (Supabase Pro + Vercel Pro + Railway)</td><td>$200–$400/mo</td></tr>
+<tr><td>Google Maps API (development)</td><td>$100–$300/mo</td></tr>
+<tr><td>OnTrac API sandbox access</td><td>$0 (free sandbox)</td></tr>
+<tr><td>Stripe setup</td><td>$0 (usage-based)</td></tr>
+<tr><td>USPTO trademark filing (2 classes)</td><td>$700–$1,000</td></tr>
+<tr><td>Legal (attorney — IP + SaaS terms)</td><td>$2,000–$5,000</td></tr>
+<tr><td>Development tools (Cursor Pro, GitHub Copilot)</td><td>$40–$100/mo</td></tr>
+<tr><td>Total pre-launch (3 months)</td><td>~$10,000–$18,000</td></tr></table>
+<h2>Revenue Milestones</h2>
+<table><tr><th>Milestone</th><th>Timeline</th><th>MRR</th><th>Drivers</th></tr>
+<tr><td>Beta launch (1 RSP pilot)</td><td>Month 3 (Q3 2026)</td><td>$1,000–$1,500</td><td>80–120</td></tr>
+<tr><td>Territory 11 soft launch</td><td>Month 5</td><td>$10,000–$15,000</td><td>700–1,000</td></tr>
+<tr><td>Break-even</td><td>Month 7–9</td><td>~$20,000</td><td>1,400–1,700</td></tr>
+<tr><td>T11 full penetration</td><td>Month 12</td><td>$60,000–$90,000</td><td>5,000–7,500</td></tr></table>
+<h2>Unit Economics</h2>
+<table><tr><th>Metric</th><th>Value</th></tr>
+<tr><td>ARPU (per driver/mo)</td><td>$12–$15</td></tr>
+<tr><td>CAC (direct outreach model)</td><td>$500–$2,000/RSP operator</td></tr>
+<tr><td>LTV (3-year, 100-driver RSP)</td><td>$43,200–$64,800</td></tr>
+<tr><td>LTV:CAC ratio</td><td>22:1–130:1</td></tr>
+<tr><td>Gross Margin (SaaS)</td><td>75–82%</td></tr></table>`,attachments:[]}
+};
+
+const roadmapData=[
+{phase:"Sprint 1 — Foundation & Infrastructure",days:"Days 1–10",status:"active",tasks:[
+{id:"r1",title:"Supabase project setup: DB, Auth, Storage, Realtime configured",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r2",title:"Next.js 14 + TypeScript + Tailwind scaffold with App Router",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r3",title:"Docker Compose local dev stack (Next.js + Supabase local)",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r4",title:"Multi-tenant DB schema v1: organizations, drivers, routes, stops, pods",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r5",title:"Supabase Auth + RLS policies (org_id isolation on all tables)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r6",title:"GitHub repo + CI/CD: GitHub Actions → Vercel auto-deploy (staging)",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r7",title:"Environment variable management: Vercel + Railway secrets setup",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 2 — Core CRUD: Drivers, Routes, Stops",days:"Days 11–20",status:"upcoming",tasks:[
+{id:"r8",title:"Org onboarding flow: RSP/DSP registration + Stripe customer creation",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r9",title:"Driver management CRUD: create, update, assign, deactivate + profile page",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r10",title:"Route entity: create route, assign driver, set date + vehicle",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r11",title:"Stop management: bulk import (CSV/JSON), geocoding via Google Maps API",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r12",title:"RBAC roles: Admin / Dispatcher / Driver — permissions matrix implemented",done:false,owner:"Dzmitry",days:"2d"}]},
+
+{phase:"Sprint 3 — FlowSkip Route Engine v1",days:"Days 21–30",status:"upcoming",tasks:[
+{id:"r13",title:"Google Maps Directions API integration: multi-stop route calculation",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r14",title:"FlowSkip v1 algorithm: heavy-to-light stop sequencing (weight-based sort)",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r15",title:"Zone density scoring: drop density calculation per ZIP cluster",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r16",title:"n8n workflow: route creation trigger → FlowSkip optimization → apply sequence",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r17",title:"Manual override: dispatcher can reorder stops via drag-and-drop UI",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r18",title:"Route optimization API endpoint: POST /routes/{id}/optimize",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 4 — Driver Mobile App (React Native + Expo)",days:"Days 31–40",status:"upcoming",tasks:[
+{id:"r19",title:"Expo managed workflow scaffold: navigation, Supabase client, auth flow",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r20",title:"Driver login + today's route view (stop list with sequence)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r21",title:"Stop-by-stop navigation: tap stop → open Google Maps directions",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r22",title:"Stop status updates: Arrived → Delivered (with timestamp + GPS snap)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r23",title:"Background GPS tracking (expo-location) — real-time position to Supabase Realtime",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r24",title:"Push notifications (Expo Push) — new route assigned, re-routing alert",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 5 — ePOD & Stop Exception Handling",days:"Days 41–50",status:"upcoming",tasks:[
+{id:"r25",title:"ePOD: camera capture (expo-camera) → Supabase Storage upload",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r26",title:"Signature collection (expo-signature) → stored with POD record",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r27",title:"Exception flow: failed delivery → reason code → reschedule trigger",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r28",title:"Triangulation Layer 2 v1: geofence anomaly detection (stop GPS vs actual delivery GPS)",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r29",title:"POD review UI (dispatcher): photo gallery, signature, GPS map pin per stop",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 6 — OnTrac API Integration",days:"Days 51–60",status:"upcoming",tasks:[
+{id:"r30",title:"OnTrac OAuth 2.0 auth flow + token auto-refresh (60s buffer before expiry)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r31",title:"Service Zone API: ZIP pair lookup + cache in service_zones table (T11 pre-load)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r32",title:"Rating API: shipment cost calculation for label generation flow",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r33",title:"Order creation + ZPL label generation → Supabase Storage /labels/{org_id}/",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r34",title:"Webhook receiver: HMAC-SHA256 validation + event processing (8 event types)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r35",title:"Webhook idempotency: tracking_id + event_type + timestamp dedup key",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 7 — Dispatcher Dashboard & Real-Time Tracking",days:"Days 61–70",status:"upcoming",tasks:[
+{id:"r36",title:"Live fleet map: Google Maps JS + Supabase Realtime WebSocket → driver pins",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r37",title:"Route completion panel: stops completed / total, ETA per route",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r38",title:"Driver performance KPIs: stops/hr, on-time rate, exception rate per driver",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r39",title:"Takt Time monitor: alert when stop dwell > 2 min threshold",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r40",title:"Day-end summary report: route completion, POD audit, failed deliveries",done:false,owner:"Dzmitry",days:"1d"}]},
+
+{phase:"Sprint 8 — Billing & Multi-Tenant Hardening",days:"Days 71–80",status:"upcoming",tasks:[
+{id:"r41",title:"Stripe subscription plans: Starter / Growth / Scale tiers setup",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r42",title:"Per-driver metered billing: Stripe Usage Records API — count active drivers nightly",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r43",title:"Customer billing portal (Stripe Customer Portal) — self-service plan changes",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r44",title:"Tenant isolation audit: verify all RLS policies, no cross-org data leak",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r45",title:"Supabase Vault: migrate all secrets (OnTrac HMAC, Stripe keys) to Vault",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r46",title:"Onboarding wizard: 5-step RSP setup (org → drivers → routes → OnTrac → billing)",done:false,owner:"Dzmitry",days:"2d"}]},
+
+{phase:"Sprint 9 — QA, Security & Beta Launch (T11)",days:"Days 81–90",status:"upcoming",tasks:[
+{id:"r47",title:"End-to-end test: route create → dispatch → driver app → ePOD → OnTrac label flow",done:false,owner:"Dzmitry",days:"3d"},
+{id:"r48",title:"OWASP Top 10 security audit + dependency vulnerability scan",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r49",title:"CCPA compliance review: privacy policy, consent flows, PII handling audit",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r50",title:"Performance testing: 500 concurrent drivers + 50 concurrent dispatchers",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r51",title:"USPTO trademark ITU filing — Drivehub (Class 42 + 35)",done:false,owner:"Dzmitry",days:"1d"},
+{id:"r52",title:"Beta launch: Territory 11 pilot RSP onboarding (confirmed customer)",done:false,owner:"Dzmitry",days:"2d"},
+{id:"r53",title:"Documentation: API docs, dispatcher user guide, driver app onboarding guide",done:false,owner:"Dzmitry",days:"1d"}]}
+];
+
+const feedbackChecklist=[
+{section:"Performance",items:[{id:"fb1",text:"Page load time under 3 seconds",priority:"high",checked:false},{id:"fb2",text:"Images optimized (WebP, lazy loading)",priority:"high",checked:false},{id:"fb3",text:"CSS/JS minified and bundled",priority:"med",checked:false},{id:"fb4",text:"CDN configured for static assets",priority:"med",checked:false}]},
+{section:"SEO",items:[{id:"fb5",text:"Meta titles and descriptions on all pages",priority:"high",checked:false},{id:"fb6",text:"Open Graph tags for social sharing",priority:"med",checked:false},{id:"fb7",text:"XML sitemap generated and submitted",priority:"high",checked:false},{id:"fb8",text:"Canonical URLs configured",priority:"low",checked:false},{id:"fb9",text:"Structured data (JSON-LD) for key pages",priority:"med",checked:false}]},
+{section:"Mobile & UX",items:[{id:"fb10",text:"Responsive design tested on iOS + Android",priority:"high",checked:false},{id:"fb11",text:"Touch targets minimum 44px",priority:"med",checked:false},{id:"fb12",text:"Forms have proper input types and validation",priority:"med",checked:false},{id:"fb13",text:"Navigation accessible via hamburger menu",priority:"high",checked:false}]},
+{section:"Security",items:[{id:"fb14",text:"SSL certificate active and valid",priority:"high",checked:false},{id:"fb15",text:"HTTPS redirect for all pages",priority:"high",checked:false},{id:"fb16",text:"Security headers (HSTS, CSP, X-Frame)",priority:"med",checked:false},{id:"fb17",text:"Contact form has CAPTCHA protection",priority:"low",checked:false}]},
+{section:"Content & Legal",items:[{id:"fb18",text:"Privacy Policy page exists and is current",priority:"high",checked:false},{id:"fb19",text:"Terms of Service page exists",priority:"high",checked:false},{id:"fb20",text:"Cookie consent banner implemented",priority:"med",checked:false},{id:"fb21",text:"404 page is branded and helpful",priority:"low",checked:false}]}
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentSection='executive-summary';
+let isEditing=false;
+let editedContent={};
+let pendingAttachments=[];
+let customLogoData=null;
+
+// ══════════════════════════════════════
+// PANEL SWITCHING
+// ══════════════════════════════════════
+function switchPanel(id){
+  document.querySelectorAll('.app-tab[data-panel]').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.app-panel').forEach(p=>p.classList.remove('active'));
+  const tab=document.querySelector(`.app-tab[data-panel="${id}"]`);
+  const panel=document.getElementById('panel-'+id);
+  if(tab)tab.classList.add('active');
+  if(panel)panel.classList.add('active');
+  currentPanel=id;
+  closeMobileSidebar();
+}
+document.querySelectorAll('.app-tab[data-panel]').forEach(tab=>{tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));});
+
+// ══════════════════════════════════════
+// 1) EDITABLE LOGO & PROJECT NAME
+// ══════════════════════════════════════
+function handleLogoUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    customLogoData=ev.target.result;
+    const icon=document.getElementById('logoIcon');
+    const existing=icon.querySelector('img');
+    if(existing)existing.remove();
+    const img=document.createElement('img');img.src=customLogoData;
+    icon.appendChild(img);
+    document.getElementById('logoText').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+// Sync project name across the interface
+document.getElementById('projectName').addEventListener('input',function(){
+  document.getElementById('tabBrandName').textContent=this.textContent;
+  document.title=this.textContent+' — MVP Build Plan';
+});
+
+// ══════════════════════════════════════
+// SIDEBAR NAV + PRIORITY COLORS
+// ══════════════════════════════════════
+let openPickerId=null;
+function buildSidebar(){
+  const nav=document.getElementById('sidebarNav');
+  const groups={};
+  for(const[id,sec] of Object.entries(sections)){if(!groups[sec.group])groups[sec.group]=[];groups[sec.group].push({id,...sec});}
+  let html='';
+  for(const[group,items] of Object.entries(groups)){
+    html+=`<div class="nav-group"><div class="nav-group-title" onclick="this.parentElement.classList.toggle('collapsed')"><span class="caret">▼</span> ${group}</div><div class="nav-items">`;
+    for(const item of items){
+      const cls=item.id===currentSection?'nav-item active':'nav-item';
+      const pc=item.priority||'none';
+      html+=`<a class="${cls}" data-section="${item.id}">
+        <span class="nav-priority-dot p-${pc}" data-nav-id="${item.id}" onclick="event.stopPropagation();toggleNavPriority('${item.id}',this)" title="Click to set priority"></span>
+        <span class="nav-label">${item.title}</span>
+        <span class="status ${item.status}"></span>
+        <div class="nav-priority-picker" id="picker-${item.id}">
+          <div class="nav-pp-item pp-red" title="Highest Priority" onclick="event.stopPropagation();setNavPriority('${item.id}','red')">!</div>
+          <div class="nav-pp-item pp-green" title="Medium Priority" onclick="event.stopPropagation();setNavPriority('${item.id}','green')">▬</div>
+          <div class="nav-pp-item pp-blue" title="Agreed / Low" onclick="event.stopPropagation();setNavPriority('${item.id}','blue')">✓</div>
+          <div class="nav-pp-item pp-none" title="No priority" onclick="event.stopPropagation();setNavPriority('${item.id}','none')">✕</div>
+        </div>
+      </a>`;
+    }
+    html+=`</div></div>`;
+  }
+  nav.innerHTML=html;
+  nav.querySelectorAll('.nav-item[data-section]').forEach(el=>{el.addEventListener('click',()=>goSection(el.dataset.section));});
+}
+function toggleNavPriority(id,dotEl){
+  if(openPickerId&&openPickerId!==id){document.getElementById('picker-'+openPickerId)?.classList.remove('open');}
+  const picker=document.getElementById('picker-'+id);
+  picker.classList.toggle('open');
+  openPickerId=picker.classList.contains('open')?id:null;
+}
+function setNavPriority(id,color){
+  sections[id].priority=color;
+  const dot=document.querySelector(`.nav-priority-dot[data-nav-id="${id}"]`);
+  if(dot){dot.className='nav-priority-dot p-'+color;}
+  document.getElementById('picker-'+id)?.classList.remove('open');
+  openPickerId=null;
+}
+// Close picker on outside click
+document.addEventListener('click',e=>{
+  if(openPickerId&&!e.target.closest('.nav-priority-dot')&&!e.target.closest('.nav-priority-picker')){
+    document.getElementById('picker-'+openPickerId)?.classList.remove('open');
+    openPickerId=null;
+  }
+});
+
+function goSection(id){
+  if(!sections[id])return;
+  if(isEditing)editedContent[currentSection]=document.getElementById('contentArea').innerHTML;
+  currentSection=id;
+  document.getElementById('contentArea').innerHTML=editedContent[id]||sections[id].content;
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  const a=document.querySelector(`.nav-item[data-section="${id}"]`);if(a)a.classList.add('active');
+  document.getElementById('topbarTitle').textContent=sections[id].title;
+  renderAttachments(id);
+  updateHlLegend();
+  closeMobileSidebar();
+}
+function filterNav(q){q=q.toLowerCase();document.querySelectorAll('.nav-item').forEach(el=>{el.style.display=(!q||el.textContent.toLowerCase().includes(q))?'':'none';});}
+
+// ══════════════════════════════════════
+// EDIT MODE
+// ══════════════════════════════════════
+function toggleEdit(){
+  isEditing=!isEditing;
+  const c=document.getElementById('contentArea'),btn=document.getElementById('editBtn'),ind=document.getElementById('editIndicator');
+  if(isEditing){c.contentEditable='true';btn.textContent='💾 Save';btn.classList.add('success');ind.textContent='✏️ Editing';ind.className='edit-indicator editing';}
+  else{editedContent[currentSection]=c.innerHTML;c.contentEditable='false';btn.textContent='✏️ Edit';btn.classList.remove('success');ind.textContent='✓ Saved';ind.className='edit-indicator saved';setTimeout(()=>{ind.textContent='';ind.className='edit-indicator';},2000);}
+}
+
+// ══════════════════════════════════════
+// 3) TEXT HIGHLIGHT / MARK SYSTEM
+// ══════════════════════════════════════
+function toggleMarkPopup(){
+  // Save selection BEFORE popup opens
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0&&!sel.isCollapsed){
+    savedRange=sel.getRangeAt(0).cloneRange();
+  }
+  document.getElementById('markPopup').classList.toggle('open');
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.mark-btn-wrap'))document.getElementById('markPopup')?.classList.remove('open');});
+
+let savedRange=null;
+// Also save on any selection change within content
+document.addEventListener('selectionchange',()=>{
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0&&!sel.isCollapsed){
+    const container=document.getElementById('contentArea');
+    if(container&&container.contains(sel.anchorNode)){
+      savedRange=sel.getRangeAt(0).cloneRange();
+    }
+  }
+});
+
+function applyHighlight(color){
+  // Restore saved range if current selection is gone
+  let sel=window.getSelection();
+  let range=null;
+  if(sel&&sel.rangeCount>0&&!sel.isCollapsed){
+    range=sel.getRangeAt(0);
+  }else if(savedRange){
+    range=savedRange;
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  if(!range||range.collapsed){
+    // Flash a tooltip instead of alert
+    const btn=document.getElementById('markTextBtn');
+    btn.textContent='⚠️ Select text first!';btn.style.color='#ef4444';
+    setTimeout(()=>{btn.textContent='🖍️ Mark Text';btn.style.color='';},1500);
+    return;
+  }
+  const container=document.getElementById('contentArea');
+  if(!container.contains(range.commonAncestorContainer)){return;}
+  const mark=document.createElement('mark');
+  mark.setAttribute('data-hl',color);
+  mark.title={red:'🔴 Highest Priority (P1)',green:'🟢 Medium Priority (P2)',blue:'🔵 Agreed / Low (P3)'}[color];
+  mark.onclick=function(e){e.stopPropagation();if(confirm('Remove this highlight?')){unwrapMark(this);}};
+  try{range.surroundContents(mark);}catch(ex){
+    const frag=range.extractContents();mark.appendChild(frag);range.insertNode(mark);
+  }
+  sel.removeAllRanges();
+  savedRange=null;
+  editedContent[currentSection]=container.innerHTML;
+  document.getElementById('markPopup').classList.remove('open');
+  updateHlLegend();
+}
+
+function unwrapMark(markEl){
+  const parent=markEl.parentNode;
+  while(markEl.firstChild)parent.insertBefore(markEl.firstChild,markEl);
+  parent.removeChild(markEl);
+  parent.normalize();
+  editedContent[currentSection]=document.getElementById('contentArea').innerHTML;
+  updateHlLegend();
+}
+
+function removeAllHighlights(color){
+  const container=document.getElementById('contentArea');
+  const selector=color==='all'?'mark[data-hl]':`mark[data-hl="${color}"]`;
+  container.querySelectorAll(selector).forEach(m=>unwrapMark(m));
+  document.getElementById('markPopup').classList.remove('open');
+}
+
+function updateHlLegend(){
+  const container=document.getElementById('contentArea');
+  const has=container.querySelectorAll('mark[data-hl]').length>0;
+  document.getElementById('hlLegend').classList.toggle('visible',has);
+}
+
+// ══════════════════════════════════════
+// ATTACHMENTS
+// ══════════════════════════════════════
+function openAttachModal(){document.getElementById('attachModalBg').classList.add('open');pendingAttachments=[];}
+function closeAttachModal(){document.getElementById('attachModalBg').classList.remove('open');document.getElementById('filePreviewArea').innerHTML='';document.getElementById('linkPreviewBox').innerHTML='';document.getElementById('linkUrlInput').value='';}
+function switchAttachTab(el,tab){document.querySelectorAll('.attach-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('attachFileTab').style.display=tab==='file'?'':'none';document.getElementById('attachLinkTab').style.display=tab==='link'?'':'none';}
+function handleFileSelect(e){
+  const preview=document.getElementById('filePreviewArea');
+  for(const file of e.target.files){
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      pendingAttachments.push({type:'image',name:file.name,size:file.size,data:ev.target.result,timestamp:new Date().toISOString()});
+      preview.innerHTML+=`<div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--border)"><img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);color:#fff;font-size:9px;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${file.name}</div></div>`;
+    };reader.readAsDataURL(file);
+  }
+}
+let linkPreviewTimeout;
+function debounceLinkPreview(url){clearTimeout(linkPreviewTimeout);if(!url){document.getElementById('linkPreviewBox').innerHTML='';return;}linkPreviewTimeout=setTimeout(()=>generateLinkPreview(url),500);}
+function generateLinkPreview(url){try{new URL(url);}catch{return;}const domain=new URL(url).hostname;document.getElementById('linkPreviewBox').innerHTML=`<div class="link-preview"><div class="link-preview-thumb">🔗</div><div class="link-preview-body"><div class="link-preview-title">${domain}</div><div class="link-preview-url">${url}</div><div class="link-preview-desc">Link preview</div></div></div>`;pendingAttachments=[{type:'link',url,domain,timestamp:new Date().toISOString()}];}
+function confirmAttach(){
+  if(!pendingAttachments.length)return closeAttachModal();
+  if(!sections[currentSection].attachments)sections[currentSection].attachments=[];
+  sections[currentSection].attachments.push(...pendingAttachments);
+  renderAttachments(currentSection);
+  const area=document.getElementById('contentArea');
+  for(const att of pendingAttachments){
+    if(att.type==='image')area.innerHTML+=`<div class="attached-image"><img src="${att.data}" alt="${att.name}"><div class="img-caption">📎 ${att.name} — attached ${new Date().toLocaleString()}</div></div>`;
+    else if(att.type==='link')area.innerHTML+=`<div class="link-preview"><div class="link-preview-thumb">🔗</div><div class="link-preview-body"><div class="link-preview-title">${att.domain}</div><div class="link-preview-url"><a href="${att.url}" target="_blank">${att.url}</a></div><div class="link-preview-desc">Attached link</div></div></div>`;
+  }
+  editedContent[currentSection]=area.innerHTML;closeAttachModal();
+}
+function renderAttachments(sectionId){const bar=document.getElementById('attachmentsBar');const atts=sections[sectionId]?.attachments||[];if(!atts.length){bar.style.display='none';return;}bar.style.display='flex';bar.innerHTML='<span style="font-size:11px;color:var(--text-muted);font-weight:600">📎</span>'+atts.map((a,i)=>a.type==='image'?`<span class="attachment-chip"><img src="${a.data}" alt="">${a.name}<span class="att-remove" onclick="removeAttachment(${i})">×</span></span>`:`<span class="attachment-chip">🔗 ${a.domain}<span class="att-remove" onclick="removeAttachment(${i})">×</span></span>`).join('');}
+function removeAttachment(i){sections[currentSection].attachments.splice(i,1);renderAttachments(currentSection);}
+document.addEventListener('DOMContentLoaded',()=>{const dz=document.getElementById('dropZone');if(dz){dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files.length)handleFileSelect({target:{files:e.dataTransfer.files}});});}});
+
+// ══════════════════════════════════════
+// WEBSITE CMS
+// ══════════════════════════════════════
+function selectSite(el,site){document.querySelectorAll('.cms-nav-group:first-child .cms-nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');loadSitePreview(site);}
+function loadSitePreview(site){const iframe=document.getElementById('siteIframe'),ph=document.getElementById('websitePlaceholder');const urls={onroute:'https://onroute.express',drivehub:'https://drivehub.work'};iframe.src=urls[site]||'about:blank';iframe.style.display='block';ph.style.display='none';document.getElementById('cmsTopTitle').textContent=(site==='onroute'?'onroute.express':'drivehub.work')+' — Live Preview';}
+function refreshPreview(){const iframe=document.getElementById('siteIframe');if(iframe.src&&iframe.src!=='about:blank')iframe.src=iframe.src;}
+
+// ── View Mode Toggle ──
+let currentViewMode='desktop';
+function setViewMode(mode){
+  currentViewMode=mode;
+  const wrapper=document.getElementById('iframeWrapper');
+  wrapper.className='website-iframe-wrapper mode-'+mode;
+  document.querySelectorAll('.viewmode-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.mode===mode);
+  });
+  // Update topbar label
+  const modeLabel={desktop:'Desktop',tablet:'Tablet',mobile:'Mobile'}[mode];
+  const titleEl=document.getElementById('cmsTopTitle');
+  const base=titleEl.textContent.replace(/ — (Desktop|Tablet|Mobile)$/,'');
+  titleEl.textContent=base+' — '+modeLabel;
+}
+function selectCmsTab(el,tab){document.querySelectorAll('.cms-nav-sub .cms-nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');if(tab==='feedback')openFeedbackPanel();else closeFeedbackPanel();if(tab==='settings')openSettingsModal();document.getElementById('cmsTopTitle').textContent='onroute.express — '+tab.charAt(0).toUpperCase()+tab.slice(1);}
+function openSettingsModal(){document.getElementById('settingsOverlay').classList.add('open');}
+function closeSettingsModal(){document.getElementById('settingsOverlay').classList.remove('open');}
+function openFeedbackPanel(){document.getElementById('feedbackPanel').style.display='flex';renderFeedback();}
+function closeFeedbackPanel(){document.getElementById('feedbackPanel').style.display='none';}
+function renderFeedback(){document.getElementById('feedbackBody').innerHTML=feedbackChecklist.map(sec=>`<div class="fb-section"><div class="fb-section-title">${sec.section}</div>${sec.items.map(item=>`<div class="fb-item"><input type="checkbox" id="${item.id}" ${item.checked?'checked':''} onchange="feedbackChecklist.find(s=>s.items.find(i=>i.id==='${item.id}')).items.find(i=>i.id==='${item.id}').checked=this.checked;updateProgress()"><label for="${item.id}">${item.text}</label><span class="fb-priority ${item.priority}">${item.priority}</span></div>`).join('')}</div>`).join('')+`<div class="fb-section"><div class="fb-section-title">Notes</div><textarea class="fb-notes" id="feedbackNotes" placeholder="Additional feedback…"></textarea></div>`;}
+function saveFeedback(){alert('✅ Feedback saved!');}
+function exportFeedbackJSON(){downloadBlob(new Blob([JSON.stringify({timestamp:new Date().toISOString(),checklist:feedbackChecklist,notes:document.getElementById('feedbackNotes')?.value||''},null,2)],{type:'application/json'}),'feedback-checklist.json');}
+
+// ══════════════════════════════════════
+// ROADMAP (centered)
+// ══════════════════════════════════════
+function renderRoadmap(){
+  const body=document.getElementById('roadmapBody');
+  body.innerHTML='<div class="roadmap-body-inner">'+roadmapData.map(phase=>{
+    const done=phase.tasks.filter(t=>t.done).length,total=phase.tasks.length,pct=Math.round(done/total*100);
+    return`<div class="rm-phase"><div class="rm-phase-header"><h3><span class="phase-badge ${phase.status}">${phase.status==='complete'?'✅ Complete':phase.status==='active'?'🔶 In Progress':'⬜ Upcoming'}</span> ${phase.phase} <span style="font-weight:400;font-size:13px;color:var(--text-muted)">(${phase.days})</span></h3><span class="phase-pct">${done}/${total} — ${pct}%</span></div><div class="rm-tasks">${phase.tasks.map(task=>`<div class="rm-task"><input type="checkbox" ${task.done?'checked':''} onchange="toggleTask('${task.id}',this.checked)"><div class="rm-task-body"><div class="rm-task-title ${task.done?'completed':''}">${task.title}</div><div class="rm-task-meta"><span>👤 ${task.owner}</span><span>⏱ ${task.days}</span></div></div><span class="rm-task-edit" onclick="editTask('${task.id}')">✏️</span></div>`).join('')}</div></div>`;
+  }).join('')+'</div>';
+  updateProgress();
+}
+function toggleTask(taskId,checked){for(const p of roadmapData){const t=p.tasks.find(t=>t.id===taskId);if(t){t.done=checked;break;}}renderRoadmap();}
+function editTask(taskId){for(const p of roadmapData){const t=p.tasks.find(t=>t.id===taskId);if(t){const n=prompt('Edit task:',t.title);if(n!==null)t.title=n;renderRoadmap();return;}}}
+function updateProgress(){
+  const all=roadmapData.flatMap(p=>p.tasks),done=all.filter(t=>t.done).length,pct=Math.round(done/all.length*100);
+  ['roadmapProgressFill','footerProgressFill','sidebarProgress'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+  const pE=document.getElementById('roadmapProgressPct');if(pE)pE.textContent=pct+'%';
+  const fP=document.getElementById('footerPct');if(fP)fP.textContent=pct+'%';
+  const sL=document.getElementById('sidebarProgressLabel');if(sL)sL.textContent=`${done} of ${all.length} tasks`;
+}
+
+// ══════════════════════════════════════
+// EXPORTS
+// ══════════════════════════════════════
+function exportFullJSON(){
+  const dataset={project:{name:document.getElementById('projectName').textContent,type:'B2B SaaS',version:'3.0',exported:new Date().toISOString(),logo:customLogoData||null},
+    sections:Object.entries(sections).map(([id,sec])=>({id,title:sec.title,group:sec.group,status:sec.status,priority:sec.priority,content_html:editedContent[id]||sec.content,attachments:sec.attachments||[]})),
+    roadmap:{progress_pct:Math.round(roadmapData.flatMap(p=>p.tasks).filter(t=>t.done).length/roadmapData.flatMap(p=>p.tasks).length*100),phases:roadmapData},
+    feedback_checklist:feedbackChecklist};
+  downloadBlob(new Blob([JSON.stringify(dataset,null,2)],{type:'application/json'}),'drivehub-full-dataset.json');
+}
+function exportAllMD(){for(const[id,sec] of Object.entries(sections)){downloadBlob(new Blob([htmlToMd(editedContent[id]||sec.content)],{type:'text/markdown'}),`${id}.md`);}}
+function htmlToMd(h){return h.replace(/<h1[^>]*>(.*?)<\/h1>/gi,'# $1\n\n').replace(/<h2[^>]*>(.*?)<\/h2>/gi,'## $1\n\n').replace(/<h3[^>]*>(.*?)<\/h3>/gi,'### $1\n\n').replace(/<strong>(.*?)<\/strong>/gi,'**$1**').replace(/<li>(.*?)<\/li>/gi,'- $1\n').replace(/<p>(.*?)<\/p>/gi,'$1\n\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/\n{3,}/g,'\n\n').trim();}
+function downloadBlob(blob,fn){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);}
+
+// ══════════════════════════════════════
+// MOBILE SIDEBAR TOGGLE
+// ══════════════════════════════════════
+let currentPanel='docs';
+function toggleMobileSidebar(){
+  if(currentPanel==='docs'){
+    document.querySelector('.sidebar')?.classList.toggle('mobile-open');
+    document.getElementById('sidebarOverlay')?.classList.toggle('visible');
+  }else if(currentPanel==='website'){
+    document.querySelector('.cms-sidebar')?.classList.toggle('mobile-open');
+  }
+}
+function closeMobileSidebar(){
+  document.querySelector('.sidebar')?.classList.remove('mobile-open');
+  document.getElementById('sidebarOverlay')?.classList.remove('visible');
+  document.querySelector('.cms-sidebar')?.classList.remove('mobile-open');
+}
+function checkMobile(){
+  const isMobile=window.innerWidth<=768;
+  const btn=document.getElementById('mobileMenuBtn');
+  if(btn)btn.style.display=isMobile?'':'none';
+}
+window.addEventListener('resize',checkMobile);
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+function doLogout(){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:#06080f;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 0.4s ease;';
+  ov.innerHTML='<div style="font-family:Fraunces,serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;">Vlaam<span style=\"color:#f59e0b\">Core</span></div><div style=\"font-family:JetBrains Mono,monospace;font-size:11px;color:#64748b;letter-spacing:2px;text-transform:uppercase\">Signing out…</div>';
+  document.body.appendChild(ov);
+  requestAnimationFrame(()=>{ov.style.opacity='1';});
+  setTimeout(()=>{window.location.href='vlaamcore-login.html';},900);
+}
+document.addEventListener('DOMContentLoaded',()=>{buildSidebar();goSection('executive-summary');renderRoadmap();renderFeedback();checkMobile();});
+</script>
+</body>
+</html>

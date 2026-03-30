@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VlaamCore — Enterprise Development Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   VLAAMCORE — ROOT VARIABLES
+═══════════════════════════════════════════════════════ */
+:root {
+  --bg-deep:      #06080f;
+  --bg-card:      rgba(12, 16, 30, 0.82);
+  --bg-input:     rgba(255,255,255,0.04);
+  --bg-input-focus: rgba(26,109,202,0.12);
+  --brand:        #1a6dca;
+  --brand-light:  #2b85f0;
+  --brand-glow:   rgba(26,109,202,0.35);
+  --accent:       #f59e0b;
+  --accent-dark:  #d97706;
+  --success:      #10b981;
+  --danger:       #ef4444;
+  --text:         #e2e8f0;
+  --text-muted:   #64748b;
+  --text-dim:     #94a3b8;
+  --border:       rgba(255,255,255,0.07);
+  --border-active:rgba(26,109,202,0.6);
+  --glass-blur:   blur(24px);
+  --radius-card:  20px;
+  --radius-input: 10px;
+  --shadow-card:  0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-glow:  0 0 60px rgba(26,109,202,0.2);
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+  min-height: 100vh;
+  background: var(--bg-deep);
+  font-family: var(--font-body);
+  color: var(--text);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BACKGROUND — LAYERED ATMOSPHERE
+═══════════════════════════════════════════════════════ */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Deep gradient base */
+.bg-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(26,109,202,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(245,158,11,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(26,109,202,0.08) 0%, transparent 50%),
+    linear-gradient(160deg, #06080f 0%, #080c1a 50%, #06080f 100%);
+}
+
+/* Geometric grid lines */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(26,109,202,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,109,202,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+}
+
+/* Floating geometric shapes */
+.bg-shapes {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.geo-shape {
+  position: absolute;
+  border: 1px solid;
+  opacity: 0;
+  animation: floatIn 1.2s ease forwards, drift 20s ease-in-out infinite;
+}
+.geo-shape:nth-child(1) {
+  width: 320px; height: 320px;
+  border-color: rgba(26,109,202,0.08);
+  border-radius: 4px;
+  top: -80px; right: 10%;
+  transform: rotate(15deg);
+  animation-delay: 0.2s, 1.4s;
+}
+.geo-shape:nth-child(2) {
+  width: 200px; height: 200px;
+  border-color: rgba(245,158,11,0.06);
+  border-radius: 4px;
+  bottom: 10%; left: 5%;
+  transform: rotate(30deg);
+  animation-delay: 0.4s, 2s;
+}
+.geo-shape:nth-child(3) {
+  width: 120px; height: 120px;
+  border-color: rgba(26,109,202,0.1);
+  border-radius: 50%;
+  top: 60%; right: 5%;
+  animation-delay: 0.6s, 3s;
+}
+.geo-shape:nth-child(4) {
+  width: 500px; height: 500px;
+  border-color: rgba(26,109,202,0.04);
+  border-radius: 4px;
+  bottom: -150px; right: -100px;
+  transform: rotate(45deg);
+  animation-delay: 0.1s, 1.8s;
+}
+.geo-shape:nth-child(5) {
+  width: 80px; height: 80px;
+  border-color: rgba(245,158,11,0.12);
+  border-radius: 4px;
+  top: 15%; left: 8%;
+  transform: rotate(20deg);
+  animation-delay: 0.5s, 2.5s;
+}
+
+@keyframes floatIn {
+  from { opacity: 0; transform: scale(0.9) rotate(inherit); }
+  to   { opacity: 1; transform: scale(1) rotate(inherit); }
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0px) rotate(var(--r, 15deg)); }
+  50%       { transform: translateY(-20px) rotate(calc(var(--r, 15deg) + 5deg)); }
+}
+
+/* Noise grain overlay */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PORTAL WRAPPER
+═══════════════════════════════════════════════════════ */
+.portal-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px;
+  opacity: 0;
+  transform: translateY(28px);
+  animation: portalEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+@keyframes portalEnter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER — VLAAMCORE LOGO
+═══════════════════════════════════════════════════════ */
+.portal-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.vc-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.vc-mark {
+  width: 52px;
+  height: 52px;
+  position: relative;
+  flex-shrink: 0;
+}
+.vc-mark svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 12px rgba(26,109,202,0.5));
+}
+
+.vc-wordmark {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.vc-name {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.vc-name span { color: var(--accent); }
+.vc-domain {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-light);
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+
+.portal-tagline {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════════ */
+.portal-card {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 28px 28px 24px;
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card top accent line */
+.portal-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand), var(--accent), var(--brand), transparent);
+  opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════
+   QUICK USER SELECT
+═══════════════════════════════════════════════════════ */
+.quick-users-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.quick-users {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.user-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--brand), var(--brand-light));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.user-chip:hover { border-color: var(--border-active); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,109,202,0.2); }
+.user-chip:hover::before { opacity: 0.08; }
+.user-chip.selected { border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-glow), 0 4px 16px rgba(26,109,202,0.25); }
+.user-chip.selected::before { opacity: 0.12; }
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.user-avatar.dev {
+  background: linear-gradient(135deg, #1a3a6b, var(--brand));
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(26,109,202,0.4);
+}
+.user-avatar.client {
+  background: linear-gradient(135deg, #7c3a0a, var(--accent));
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.4);
+}
+
+.user-info { position: relative; z-index: 1; flex: 1; min-width: 0; }
+.user-info-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.user-info-role {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+.user-chip.selected .user-info-role { color: var(--brand-light); }
+
+.user-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-chip.selected .user-check {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.user-check::after {
+  content: '';
+  width: 5px;
+  height: 3px;
+  border-left: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.user-chip.selected .user-check::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════════ */
+.card-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 -28px 22px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROJECT SELECTOR
+═══════════════════════════════════════════════════════ */
+.field-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.project-select-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.project-select-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: left;
+}
+.project-select-btn:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
+.project-select-btn.open { border-color: var(--border-active); background: var(--bg-input-focus); }
+
+.project-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.project-dot.active { background: var(--success); box-shadow: 0 0 6px rgba(16,185,129,0.6); }
+.project-dot.locked { background: var(--text-muted); }
+
+.project-name { flex: 1; }
+.project-caret {
+  width: 14px; height: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.project-select-btn.open .project-caret { transform: rotate(180deg); }
+
+/* Dropdown */
+.project-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: rgba(10, 14, 28, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  z-index: 50;
+  display: none;
+  animation: dropDown 0.18s cubic-bezier(0.16,1,0.3,1);
+}
+.project-dropdown.open { display: block; }
+
+@keyframes dropDown {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.project-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.project-option:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.project-option:hover:not(.locked-opt) { background: rgba(26,109,202,0.12); }
+.project-option.selected:not(.locked-opt) { background: rgba(26,109,202,0.18); }
+
+.project-option.locked-opt { cursor: default; opacity: 0.45; }
+.project-option.locked-opt:hover { background: transparent; }
+
+.proj-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.proj-icon.drivehub { background: linear-gradient(135deg, #0f2d5e, #1a6dca); }
+.proj-icon.kusthub   { background: linear-gradient(135deg, #0d3a2a, #059669); }
+.proj-icon.bowhub    { background: linear-gradient(135deg, #3d1a00, #d97706); }
+.proj-icon.woodhub   { background: linear-gradient(135deg, #2d1a00, #92400e); }
+
+.proj-text { flex: 1; }
+.proj-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.proj-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+.proj-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.proj-status.active-badge { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.25); }
+.proj-status.locked-badge { background: rgba(100,116,139,0.12); color: var(--text-muted); border: 1px solid rgba(100,116,139,0.2); }
+
+.locked-bar {
+  position: absolute;
+  right: 48px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FORM FIELDS
+═══════════════════════════════════════════════════════ */
+.form-field { margin-bottom: 14px; position: relative; }
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.form-input:focus {
+  border-color: var(--border-active);
+  background: var(--bg-input-focus);
+  box-shadow: 0 0 0 3px var(--brand-glow);
+}
+.form-input::placeholder { color: var(--text-muted); font-weight: 400; letter-spacing: 0; font-family: var(--font-body); }
+
+.field-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.form-input:focus + .field-icon,
+.form-field:focus-within .field-icon { color: var(--brand-light); }
+
+/* Password toggle */
+.pwd-toggle {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 15px;
+  padding: 4px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.pwd-toggle:hover { color: var(--brand-light); }
+
+/* Auto-fill pill badge */
+.autofill-badge {
+  position: absolute;
+  right: 38px; top: 50%;
+  transform: translateY(-50%);
+  background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: var(--success);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+}
+.autofill-badge.visible { display: block; }
+
+/* ═══════════════════════════════════════════════════════
+   LOGIN BUTTON
+═══════════════════════════════════════════════════════ */
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-light));
+  border: none;
+  border-radius: var(--radius-input);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(26,109,202,0.35);
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.login-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--brand-light), #3a9af5);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,109,202,0.45); }
+.login-btn:hover::before { opacity: 1; }
+.login-btn:active { transform: translateY(0); }
+.login-btn .btn-text { position: relative; z-index: 1; }
+.login-btn .btn-arrow { position: relative; z-index: 1; font-size: 16px; transition: transform 0.2s; }
+.login-btn:hover .btn-arrow { transform: translateX(4px); }
+
+/* Loading state */
+.login-btn.loading .btn-text { opacity: 0.7; }
+.login-btn .btn-spinner {
+  display: none;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  position: relative; z-index: 1;
+}
+.login-btn.loading .btn-spinner { display: block; }
+.login-btn.loading .btn-arrow { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════
+   ERROR STATE
+═══════════════════════════════════════════════════════ */
+.error-msg {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: #fca5a5;
+  margin-top: 12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.error-msg.visible { display: flex; }
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════ */
+.portal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-link {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: var(--brand-light); }
+.footer-powered {
+  font-size: 10.5px;
+  color: rgba(100,116,139,0.6);
+  letter-spacing: 0.3px;
+}
+.footer-powered span { color: var(--accent); opacity: 0.7; }
+
+/* ═══════════════════════════════════════════════════════
+   SUCCESS OVERLAY — TRANSITION TO DASHBOARD
+═══════════════════════════════════════════════════════ */
+.access-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.access-overlay.entering {
+  opacity: 1;
+  pointer-events: all;
+}
+.access-logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: scale(0.9);
+  animation: none;
+}
+.access-overlay.entering .access-logo {
+  animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+}
+.access-status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--success);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0;
+}
+.access-overlay.entering .access-status {
+  animation: fadeIn 0.5s ease 0.5s forwards;
+}
+.access-bar {
+  width: 280px;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  margin-top: 20px;
+  overflow: hidden;
+  opacity: 0;
+}
+.access-overlay.entering .access-bar {
+  animation: fadeIn 0.3s ease 0.4s forwards;
+}
+.access-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATUS BAR — BOTTOM
+═══════════════════════════════════════════════════════ */
+.status-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 28px;
+  background: rgba(6,8,15,0.9);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  z-index: 100;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px rgba(16,185,129,0.6);
+  animation: pulse-dot 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.status-text { opacity: 0.6; }
+.status-spacer { flex: 1; }
+.status-time { font-family: var(--font-mono); font-size: 10px; }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media (max-width: 520px) {
+  .portal-wrap { max-width: 100%; padding: 12px; }
+  .portal-card { padding: 20px 18px 18px; }
+  .vc-name { font-size: 24px; }
+  .quick-users { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ BACKGROUND ═══════ -->
+<div class="bg-layer bg-gradient"></div>
+<div class="bg-layer bg-grid"></div>
+<div class="bg-layer bg-noise"></div>
+
+<div class="bg-shapes">
+  <div class="geo-shape"></div>
+  <div class="geo-shape"></div>
+  <div class="geo-shape"></div>
+  <div class="geo-shape"></div>
+  <div class="geo-shape"></div>
+</div>
+
+<!-- ═══════ PORTAL ═══════ -->
+<div class="portal-wrap">
+
+  <!-- Header -->
+  <div class="portal-header">
+    <div class="vc-logo">
+      <div class="vc-mark">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer hexagon -->
+          <path d="M26 2L48 14.5V37.5L26 50L4 37.5V14.5L26 2Z"
+            fill="none" stroke="#1a6dca" stroke-width="1.5" stroke-opacity="0.6"/>
+          <!-- Inner diamond -->
+          <path d="M26 12L38 26L26 40L14 26L26 12Z"
+            fill="rgba(26,109,202,0.12)" stroke="#1a6dca" stroke-width="1.2"/>
+          <!-- VC monogram -->
+          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+            font-family="Fraunces, serif" font-size="13" font-weight="800"
+            fill="#ffffff" letter-spacing="-0.5">VC</text>
+          <!-- Accent dots -->
+          <circle cx="26" cy="2" r="2" fill="#f59e0b" opacity="0.8"/>
+          <circle cx="48" cy="14.5" r="1.5" fill="#1a6dca" opacity="0.6"/>
+          <circle cx="48" cy="37.5" r="1.5" fill="#1a6dca" opacity="0.6"/>
+          <circle cx="26" cy="50" r="2" fill="#f59e0b" opacity="0.6"/>
+          <circle cx="4" cy="37.5" r="1.5" fill="#1a6dca" opacity="0.6"/>
+          <circle cx="4" cy="14.5" r="1.5" fill="#1a6dca" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="vc-wordmark">
+        <div class="vc-name">Vlaam<span>Core</span></div>
+        <div class="vc-domain">vlaamcore.com</div>
+      </div>
+    </div>
+    <div class="portal-tagline">Enterprise Development Portal</div>
+  </div>
+
+  <!-- Card -->
+  <div class="portal-card">
+
+    <!-- Quick User Select -->
+    <div class="quick-users-label">Quick Access — Select User</div>
+    <div class="quick-users">
+      <div class="user-chip" id="chip-dev" onclick="selectUser('dev')">
+        <div class="user-avatar dev">DP</div>
+        <div class="user-info">
+          <div class="user-info-name">Dzmitry Patapav</div>
+          <div class="user-info-role">Lead Developer</div>
+        </div>
+        <div class="user-check"></div>
+      </div>
+      <div class="user-chip" id="chip-client" onclick="selectUser('client')">
+        <div class="user-avatar client">YC</div>
+        <div class="user-info">
+          <div class="user-info-name">Yauheni Chyzhyk</div>
+          <div class="user-info-role">Project Client</div>
+        </div>
+        <div class="user-check"></div>
+      </div>
+    </div>
+
+    <div class="card-divider"></div>
+
+    <!-- Project Selector -->
+    <div class="field-label">Select Project</div>
+    <div class="project-select-wrap">
+      <button class="project-select-btn" id="projBtn" onclick="toggleDropdown()">
+        <span class="project-dot active" id="projDot"></span>
+        <span class="project-name" id="projBtnText">DriveHub</span>
+        <svg class="project-caret" viewBox="0 0 14 14" fill="none">
+          <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="project-dropdown" id="projDropdown">
+
+        <!-- DriveHub — ACTIVE -->
+        <div class="project-option selected" onclick="selectProject('drivehub', 'DriveHub', false)">
+          <div class="proj-icon drivehub">🚚</div>
+          <div class="proj-text">
+            <div class="proj-title">DriveHub</div>
+            <div class="proj-subtitle">Last-Mile Delivery SaaS · MVP Q3 2026</div>
+          </div>
+          <span class="proj-status active-badge">Active</span>
+        </div>
+
+        <!-- KustHub — LOCKED -->
+        <div class="project-option locked-opt" onclick="showLockToast('KustHub')">
+          <div class="proj-icon kusthub">🌊</div>
+          <div class="proj-text">
+            <div class="proj-title">KustHub</div>
+            <div class="proj-subtitle">Coastal Logistics Platform</div>
+          </div>
+          <span class="locked-bar">🔒</span>
+          <span class="proj-status locked-badge">Locked</span>
+        </div>
+
+        <!-- BowHub — LOCKED -->
+        <div class="project-option locked-opt" onclick="showLockToast('BowHub')">
+          <div class="proj-icon bowhub">🏹</div>
+          <div class="proj-text">
+            <div class="proj-title">BowHub</div>
+            <div class="proj-subtitle">Archery Commerce Platform</div>
+          </div>
+          <span class="locked-bar">🔒</span>
+          <span class="proj-status locked-badge">Locked</span>
+        </div>
+
+        <!-- WoodHub — LOCKED -->
+        <div class="project-option locked-opt" onclick="showLockToast('WoodHub')">
+          <div class="proj-icon woodhub">🪵</div>
+          <div class="proj-text">
+            <div class="proj-title">WoodHub</div>
+            <div class="proj-subtitle">Wood Processing Industry SaaS</div>
+          </div>
+          <span class="locked-bar">🔒</span>
+          <span class="proj-status locked-badge">Locked</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Email Field -->
+    <div class="field-label">Email Address</div>
+    <div class="form-field">
+      <input type="email" class="form-input" id="emailInput"
+        placeholder="your@vlaamcore.com" autocomplete="username">
+      <span class="field-icon">✉️</span>
+      <span class="autofill-badge" id="emailBadge">Auto</span>
+    </div>
+
+    <!-- Password Field -->
+    <div class="field-label">Password</div>
+    <div class="form-field">
+      <input type="password" class="form-input" id="pwdInput"
+        placeholder="Enter password" autocomplete="current-password">
+      <span class="field-icon">🔐</span>
+      <span class="autofill-badge" id="pwdBadge">Auto</span>
+      <button class="pwd-toggle" type="button" id="pwdToggle" onclick="togglePwd()">👁️</button>
+    </div>
+
+    <!-- Login Button -->
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">
+      <div class="btn-spinner"></div>
+      <span class="btn-text" id="btnText">Access Portal</span>
+      <span class="btn-arrow" id="btnArrow">→</span>
+    </button>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg">
+      <span>⚠️</span>
+      <span id="errorText">Select a user and enter credentials to continue.</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="portal-footer">
+      <a href="#" class="footer-link" onclick="return false;">Forgot password?</a>
+      <div class="footer-powered">Powered by <span>VlaamCore</span> · v1.0</div>
+      <a href="#" class="footer-link" onclick="return false;">Support</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════ ACCESS TRANSITION OVERLAY ═══════ -->
+<div class="access-overlay" id="accessOverlay">
+  <div class="access-logo">
+    VlaamCore <span style="color:var(--accent)">↗</span>
+  </div>
+  <div class="access-status" id="accessStatus">Authenticating…</div>
+  <div class="access-bar">
+    <div class="access-bar-fill" id="accessBarFill"></div>
+  </div>
+</div>
+
+<!-- ═══════ LOCK TOAST ═══════ -->
+<div id="lockToast" style="
+  position:fixed; bottom:40px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(10,14,28,0.95); border:1px solid rgba(239,68,68,0.3);
+  color:#fca5a5; padding:10px 20px; border-radius:10px;
+  font-size:12.5px; font-family:'DM Sans',sans-serif; font-weight:500;
+  display:flex; align-items:center; gap:8px;
+  opacity:0; transition:all 0.25s ease; z-index:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  pointer-events:none;
+">
+  <span>🔒</span>
+  <span id="lockToastText">Access to this project is currently restricted.</span>
+</div>
+
+<!-- ═══════ STATUS BAR ═══════ -->
+<div class="status-bar">
+  <div class="status-dot"></div>
+  <span class="status-text">Portal Online</span>
+  <span class="status-text">·</span>
+  <span class="status-text" id="statusUser">No user selected</span>
+  <div class="status-spacer"></div>
+  <span class="status-time" id="statusClock"></span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════ */
+const USERS = {
+  dev: {
+    name: 'Dzmitry Patapav',
+    role: 'Lead Developer',
+    email: 'dzmitry@vlaamcore.com',
+    password: 'drivehub2026',
+  },
+  client: {
+    name: 'Yauheni Chyzhyk',
+    role: 'Project Client',
+    email: 'yauheni@vlaamcore.com',
+    password: 'client2026',
+  }
+};
+
+let selectedUser = null;
+let selectedProject = 'drivehub';
+let pwdVisible = false;
+
+/* ═══════════════════════════════════════════════════════
+   USER SELECTION + AUTO-FILL
+═══════════════════════════════════════════════════════ */
+function selectUser(type) {
+  selectedUser = type;
+  const u = USERS[type];
+
+  // Update chips
+  document.querySelectorAll('.user-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('chip-' + type).classList.add('selected');
+
+  // Auto-fill with animation
+  const emailEl = document.getElementById('emailInput');
+  const pwdEl   = document.getElementById('pwdInput');
+  const emailBadge = document.getElementById('emailBadge');
+  const pwdBadge   = document.getElementById('pwdBadge');
+
+  // Clear first, then type
+  emailEl.value = '';
+  pwdEl.value = '';
+
+  setTimeout(() => {
+    typeIn(emailEl, u.email, 28, () => {
+      emailBadge.classList.add('visible');
+      typeIn(pwdEl, u.password, 22, () => {
+        pwdBadge.classList.add('visible');
+      });
+    });
+  }, 80);
+
+  // Status bar
+  document.getElementById('statusUser').textContent = u.name + ' · ' + u.role;
+
+  // Hide error
+  hideError();
+}
+
+function typeIn(el, str, delay, cb) {
+  let i = 0;
+  const iv = setInterval(() => {
+    el.value += str[i++];
+    if (i >= str.length) {
+      clearInterval(iv);
+      if (cb) cb();
+    }
+  }, delay);
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROJECT DROPDOWN
+═══════════════════════════════════════════════════════ */
+function toggleDropdown() {
+  const btn = document.getElementById('projBtn');
+  const dd  = document.getElementById('projDropdown');
+  btn.classList.toggle('open');
+  dd.classList.toggle('open');
+}
+
+function selectProject(id, name, locked) {
+  if (locked) return;
+  selectedProject = id;
+  document.getElementById('projBtnText').textContent = name;
+  document.getElementById('projDot').className = 'project-dot ' + (locked ? 'locked' : 'active');
+  document.querySelectorAll('.project-option').forEach(o => o.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('projBtn').classList.remove('open');
+  document.getElementById('projDropdown').classList.remove('open');
+}
+
+function showLockToast(name) {
+  const toast = document.getElementById('lockToast');
+  document.getElementById('lockToastText').textContent =
+    name + ' is not available yet. Access restricted.';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2400);
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.project-select-wrap')) {
+    document.getElementById('projBtn').classList.remove('open');
+    document.getElementById('projDropdown').classList.remove('open');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   PASSWORD TOGGLE
+═══════════════════════════════════════════════════════ */
+function togglePwd() {
+  pwdVisible = !pwdVisible;
+  const inp = document.getElementById('pwdInput');
+  inp.type = pwdVisible ? 'text' : 'password';
+  document.getElementById('pwdToggle').textContent = pwdVisible ? '🙈' : '👁️';
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════════════════════ */
+function doLogin() {
+  const email = document.getElementById('emailInput').value.trim();
+  const pwd   = document.getElementById('pwdInput').value;
+  const btn   = document.getElementById('loginBtn');
+
+  // Validate
+  if (!selectedUser) {
+    showError('Please select a user profile above to continue.');
+    return;
+  }
+  if (!email || !pwd) {
+    showError('Email and password are required.');
+    return;
+  }
+  const u = USERS[selectedUser];
+  if (email !== u.email || pwd !== u.password) {
+    showError('Invalid credentials. Please use the Quick Access buttons to auto-fill.');
+    shakeCard();
+    return;
+  }
+  if (selectedProject !== 'drivehub') {
+    showError('Access to ' + selectedProject + ' is currently restricted.');
+    return;
+  }
+
+  // Loading state
+  btn.classList.add('loading');
+  document.getElementById('btnText').textContent = 'Authenticating…';
+  hideError();
+
+  // Transition
+  setTimeout(() => showAccessOverlay(u.name), 700);
+}
+
+function showAccessOverlay(name) {
+  const overlay = document.getElementById('accessOverlay');
+  const status  = document.getElementById('accessStatus');
+  const fill    = document.getElementById('accessBarFill');
+
+  overlay.classList.add('entering');
+
+  const steps = [
+    [300,  'Verifying credentials…'],
+    [700,  'Loading DriveHub environment…'],
+    [1100, 'Access granted · Welcome, ' + name.split(' ')[0] + '!'],
+  ];
+
+  steps.forEach(([t, msg]) => {
+    setTimeout(() => { status.textContent = msg; }, t);
+  });
+
+  // Progress bar
+  setTimeout(() => { fill.style.width = '40%'; }, 200);
+  setTimeout(() => { fill.style.width = '75%'; }, 700);
+  setTimeout(() => { fill.style.width = '100%'; }, 1100);
+
+  // Redirect
+  setTimeout(() => {
+    window.location.href = 'index-drivehub.html';
+  }, 1800);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  document.getElementById('errorText').textContent = msg;
+  el.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('errorMsg').classList.remove('visible');
+}
+function shakeCard() {
+  const card = document.querySelector('.portal-card');
+  card.style.animation = 'shake 0.4s cubic-bezier(.36,.07,.19,.97)';
+  card.addEventListener('animationend', () => card.style.animation = '', {once:true});
+}
+
+// Shake animation
+const shakeKF = document.createElement('style');
+shakeKF.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-8px)}
+  30%{transform:translateX(8px)}
+  45%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+  75%{transform:translateX(-3px)}
+  90%{transform:translateX(3px)}
+}`;
+document.head.appendChild(shakeKF);
+
+/* ═══════════════════════════════════════════════════════
+   CLOCK
+═══════════════════════════════════════════════════════ */
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('statusClock').textContent = h + ':' + m + ':' + s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ═══════════════════════════════════════════════════════
+   KEYBOARD SHORTCUT: Enter to login
+═══════════════════════════════════════════════════════ */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>

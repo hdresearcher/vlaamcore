@@ -666,6 +666,7 @@ mark[data-hl="blue"]{background:var(--hl-blue);border-bottom:2px solid #3b82f6;p
   <div class="app-tab active" data-panel="docs"><span class="tab-icon">📄</span><span class="tab-label-text"> Business Plan</span></div>
   <div class="app-tab" data-panel="website"><span class="tab-icon">🌐</span><span class="tab-label-text"> Company Websites</span></div>
   <div class="app-tab" data-panel="roadmap"><span class="tab-icon">🗺️</span><span class="tab-label-text"> Live RoadMap</span></div>
+  <div class="app-tab" data-panel="research"><span class="tab-icon">🔬</span><span class="tab-label-text"> Research</span></div>
   <div class="app-tab-spacer"></div>
   <div class="app-tab" onclick="exportFullJSON()" style="color:var(--accent)"><span class="tab-icon">📥</span><span class="tab-label-text"> Export JSON</span></div>
   <button class="logout-btn" onclick="doLogout()" title="Return to VlaamCore portal">⬅ Exit Portal</button>
@@ -850,6 +851,10 @@ mark[data-hl="blue"]{background:var(--hl-blue);border-bottom:2px solid #3b82f6;p
     </div>
     <div class="roadmap-body" id="roadmapBody"></div>
   </div>
+</div>
+
+<div class="app-panel" id="panel-research">
+  <iframe src="drivehub-research.html" style="width:100%;height:100%;border:none;display:block;"></iframe>
 </div>
 
 </div><!-- /panels -->
